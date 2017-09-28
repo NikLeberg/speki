@@ -38,11 +38,13 @@ SRCS_ASM :=
 # where are the libraries located?
 LIBDIR := lib
 BSPDIR ?= BSP
+SGUIDIR ?= sGUI
 PERIPHDIR ?= STM32F4xx_StdPeriph_Driver
 CMSISDIR ?= CMSIS
 
 # include libraries
 include $(LIBDIR)/$(BSPDIR)/build.mk
+include $(LIBDIR)/$(SGUIDIR)/build.mk
 include $(LIBDIR)/$(PERIPHDIR)/build.mk
 include $(LIBDIR)/$(CMSISDIR)/build.mk
 
