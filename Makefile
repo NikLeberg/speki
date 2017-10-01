@@ -78,7 +78,7 @@ OBJS := $(SRCS:%.c=$(OBJDIR)/%.o) $(SRCS_ASM:%.s=$(OBJDIR)/%.o)
 # default target
 all: $(BINDIR)/$(TARGET).elf | dirs
 
-debug: CFLAGS := -ggdb -Og $(filter-out -O -O0 -O1 -O2 -O3 -Os,$(CFLAGS))
+debug: CFLAGS := -ggdb -O0 $(filter-out -O -O0 -O1 -O2 -O3 -Os -Ofast,$(CFLAGS))
 debug: $(BINDIR)/$(TARGET).elf | dirs
 
 # link and create elf
