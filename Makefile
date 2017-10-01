@@ -60,7 +60,7 @@ CFLAGS += $(CFLAGS_BASE) $(CFLAGS_PROC) $(CFLAGS_DEF) $(CFLAGS_INC)
 LDFLAGS += -Tstm32f4_flash.ld
 LDFLAGS += -Wl,-Map,"$(BINDIR)/$(TARGET).map"
 LDFLAGS += -Wl,--start-group -lc -lm -Wl,--end-group
-LDFLAGS += --specs=nosys.specs
+LDFLAGS += --specs=rdimon.specs --specs=nosys.specs
 LDFLAGS += -Wl,-cref -Wl,-static
 LDFLAGS += -Wl,--gc-sections -Wl,--defsym=malloc_getpagesize_P=0x80
 
