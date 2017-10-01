@@ -116,7 +116,7 @@ size: $(BINDIR)/$(TARGET).elf
 	@$(SZ) $(BINDIR)/$(TARGET).elf
 
 run: $(BINDIR)/$(TARGET).elf
-	openocd -f openocd_run.cfg
+	openocd -f openocd.cfg
 
 # create directories
 dirs:
