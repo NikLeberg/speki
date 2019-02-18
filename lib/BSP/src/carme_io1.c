@@ -105,7 +105,7 @@ static __IO uint8_t *LED_Port = (__IO uint8_t *) (FSMC_CARME_EXTENSION1_BASE + 0
 /**
  * @brief	Pointer to the register which controls the CARME IO1 Switchs.
  */
-volatile static __IO uint8_t *Switch_Port = (__IO uint8_t *) (FSMC_CARME_EXTENSION1_BASE + 0x400);
+static __IO uint8_t *Switch_Port = (__IO uint8_t *) (FSMC_CARME_EXTENSION1_BASE + 0x400);
 
 /**
  * @brief	Pointer to the register which controls the CARME IO1 PIO PortA Value.
