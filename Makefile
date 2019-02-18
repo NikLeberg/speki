@@ -50,6 +50,7 @@ include $(LIBDIR)/$(CMSISDIR)/build.mk
 
 # compiler flags
 CFLAGS_BASE += -O2 -Wall -std=gnu11 -fdata-sections -ffunction-sections
+CFLAGS_BASE += -specs=nano.specs -u _printf_float
 CFLAGS_PROC += -mthumb -mcpu=cortex-m4 -mfloat-abi=softfp -mfpu=fpv4-sp-d16
 CFLAGS_DEF += -D$(PTYPE) -DUSE_STDPERIPH_DRIVER
 CFLAGS_DEF += -DHSE_VALUE=25000000 -DSYSCALL_USART=USART1
@@ -61,7 +62,7 @@ CFLAGS += $(CFLAGS_BASE) $(CFLAGS_PROC) $(CFLAGS_DEF) $(CFLAGS_INC)
 LDFLAGS += -Tstm32f4_flash.ld
 LDFLAGS += -Wl,-Map,"$(BINDIR)/$(TARGET).map"
 LDFLAGS += -Wl,--start-group -lc -lm -Wl,--end-group
-LDFLAGS += --specs=rdimon.specs --specs=nosys.specs
+LDFLAGS += --specs=nosys.specs
 LDFLAGS += -Wl,-cref -Wl,-static
 LDFLAGS += -Wl,--gc-sections -Wl,--defsym=malloc_getpagesize_P=0x80
 
