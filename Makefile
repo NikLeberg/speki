@@ -53,6 +53,7 @@ CFLAGS_BASE += -O2 -Wall -std=gnu11 -fdata-sections -ffunction-sections
 CFLAGS_PROC += -mthumb -mcpu=cortex-m4 -mfloat-abi=softfp -mfpu=fpv4-sp-d16
 CFLAGS_DEF += -D$(PTYPE) -DUSE_STDPERIPH_DRIVER
 CFLAGS_DEF += -DHSE_VALUE=25000000 -DSYSCALL_USART=USART1
+CFLAGS_DEF += -D_VOLATILE=volatile
 CFLAGS_INC += -Iinc
 CFLAGS += $(CFLAGS_BASE) $(CFLAGS_PROC) $(CFLAGS_DEF) $(CFLAGS_INC)
 
