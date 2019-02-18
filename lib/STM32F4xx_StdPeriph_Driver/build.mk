@@ -2,6 +2,7 @@ CFLAGS_INC += -I$(LIBDIR)/$(PERIPHDIR)/inc
 #CFLAGS_DEF += -DUSE_STDPERIPH_DRIVER -DUSE_FULL_ASSERT
 
 # search files in these directories
+SRCS += $(LIBDIR)/$(PERIPHDIR)/src/misc.c
 SRCS += $(LIBDIR)/$(PERIPHDIR)/src/stm32f4xx_adc.c
 SRCS += $(LIBDIR)/$(PERIPHDIR)/src/stm32f4xx_crc.c
 SRCS += $(LIBDIR)/$(PERIPHDIR)/src/stm32f4xx_dbgmcu.c
