@@ -1,0 +1,5 @@
+image: "index.docker.io/jeker/debian-gcc-arm-embedded"
+
+build:
+    script:
+        - make
