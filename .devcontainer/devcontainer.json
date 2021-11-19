@@ -18,6 +18,7 @@
 		// C code Intellisense and code formater / helpers.
 		"ms-vscode.cpptools",
 		"cschlosser.doxdocgen",
+		"paul-fox.iar-arm-asm",
 		// Detection and easy access to project tasks in tasks.json.
 		"spmeesseman.vscode-taskexplorer"
 	],
