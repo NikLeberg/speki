@@ -1,0 +1,27 @@
+// For format details, see https://aka.ms/devcontainer.json.
+{
+	"name": "carme-docker",
+	"image": "nikolodion/speki-ci-docker",
+	"runArgs": [
+		// Add hostname so that bash shows a nice name.
+		"--hostname",
+		"carme-docker",
+		// Add hostfile entry for easy access to WSL host ip.
+		"--add-host",
+		"host.docker.internal:host-gateway",
+	],
+	// IDs of extensions installed when the container is created.
+	"extensions": [
+		// C code Intellisense and code formater / helpers.
+		"ms-vscode.cpptools",
+		"cschlosser.doxdocgen",
+		// Detection and easy access to project tasks in tasks.json.
+		"spmeesseman.vscode-taskexplorer"
+	],
+	// Container specific settings.json values on container create.
+	"settings": {
+		// Trigger format on save & paste
+		"editor.formatOnSave": true,
+		"editor.formatOnPaste": true
+	},
+}
