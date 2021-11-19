@@ -1,5 +1,46 @@
-image: "index.docker.io/jeker/debian-gcc-arm-embedded"
+default:
+  image: nikolodion/speki-ci-docker
+
+stages:
+  - build
+  - test
+#   - doc
 
 build:
-    script:
-        - make
+  stage: build
+  script: make
+  artifacts:
+    paths:
+      - ./bin
+
+test_cppcheck:
+  stage: test
+  script: make test
+  artifacts:
+    when: always
+    reports:
+      junit: ./cppcheck_junit.xml
+
+# test_doc:
+#   stage: test
+#   script: |
+#     doxygen ./doc/doxygen/Doxyfile || true
+#     sed -i 's#/builds/leuen4/tanks/##g' doxy.log
+#     doxygen_junit --input doxy.log --output doxy_junit.xml
+#     test ! -s doxy.log
+#   artifacts:
+#     when: always
+#     reports:
+#       junit: ./doxy_junit.xml
+
+# pages:
+#   stage: doc
+#   script: |
+#     doxygen ./doc/doxygen/Doxyfile
+#     mv ./doc/doxygen/html public
+#   artifacts:
+#     paths:
+#       - public
+#   only:
+#     - master
+#     - doc
