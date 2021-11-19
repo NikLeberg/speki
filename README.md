@@ -15,5 +15,8 @@ Alternativ findet sich das aktuellste Exemplar auf [GitLab-Pages](http://leuen4.
 - Kopfhörer (HEAD) oder Lautsprecher (LINE) an der entsprechenden Buchse des CARMEs anschliessen
 - Musik & Speki geniessen!
 
+## Verwandte Projekte
+[carme-template](https://gitlab.ti.bfh.ch/jeken1/carme-template) - Vorlage für STM32CubeIDE unabhängige CARME Projekte.
+
 ## Lizenz
 [MIT](LICENSE) © [A. Reusser](mailto:reusa1@bfh.ch), [N. Leuenberger](mailto:leuen4@bfh.ch).
