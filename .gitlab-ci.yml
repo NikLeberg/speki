@@ -4,7 +4,7 @@ default:
 stages:
   - build
   - test
-#   - doc
+  - doc
 
 build:
   stage: build
@@ -13,34 +13,24 @@ build:
     paths:
       - ./bin
 
-test_cppcheck:
+test:
   stage: test
   script: make test
   artifacts:
     when: always
     reports:
-      junit: ./cppcheck_junit.xml
+      junit: 
+        - ./cppcheck_junit.xml
+        - ./doxy_junit.xml
 
-# test_doc:
-#   stage: test
-#   script: |
-#     doxygen ./doc/doxygen/Doxyfile || true
-#     sed -i 's#/builds/leuen4/tanks/##g' doxy.log
-#     doxygen_junit --input doxy.log --output doxy_junit.xml
-#     test ! -s doxy.log
-#   artifacts:
-#     when: always
-#     reports:
-#       junit: ./doxy_junit.xml
-
-# pages:
-#   stage: doc
-#   script: |
-#     doxygen ./doc/doxygen/Doxyfile
-#     mv ./doc/doxygen/html public
-#   artifacts:
-#     paths:
-#       - public
-#   only:
-#     - master
-#     - doc
+pages:
+  stage: doc
+  script: |
+    make doc
+    mv ./doc/doxygen/html public
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
+    - doc

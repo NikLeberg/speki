@@ -14,11 +14,14 @@ SZ = $(TOOLCHAIN_PATH)arm-none-eabi-size
 # static check tools
 CPPCHECK = cppcheck
 CPPCHECKFLAGS = -i./lib -i./src/system_stm32f4xx.c -i./src/stm32f4xx_it.c
+DOXYGEN = doxygen
+DOXYFILE = doc/Doxyfile
 
 # output structure
 OBJDIR ?= obj
 DEPDIR ?= dep
 BINDIR ?= bin
+DOCDIR ?= doc/doxygen
 
 # processor type
 PTYPE = STM32F40_41xxx
@@ -79,7 +82,7 @@ OBJS := $(SRCS:%.c=$(OBJDIR)/%.o) $(SRCS_ASM:%.s=$(OBJDIR)/%.o)
 # =======
 
 # these are not real targets
-.PHONY: all clean dirs size test cppcheck
+.PHONY: all clean dirs size test cppcheck doccheck doc
 
 # default target
 all: $(BINDIR)/$(TARGET).elf $(BINDIR)/$(TARGET).bin $(BINDIR)/$(TARGET).lst | dirs
@@ -138,9 +141,11 @@ clean:
 	@$(RM) $(DEPDIR)
 	@echo "[RM] $(BINDIR)"
 	@$(RM) $(BINDIR)
+	@echo "[RM] $(DOCDIR)"
+	@$(RM) $(DOCDIR)
 
 # run all static checks
-test: cppcheck
+test: cppcheck -doccheck
 
 # static check with cppcheck.
 # in CI export errors in junit-xml format
@@ -148,5 +153,25 @@ cppcheck:
 	@$(CPPCHECK) . $(CPPCHECKFLAGS)
 ifdef CI
 	@$(CPPCHECK) . $(CPPCHECKFLAGS) --xml-version=2 2> cppcheck_result.xml 1>/dev/null
-	cppcheck_junit cppcheck_result.xml cppcheck_junit.xml
+	@cppcheck_junit cppcheck_result.xml cppcheck_junit.xml
 endif
+
+# check for undocumented files
+# in CI export errors in junit-xml format
+doccheck: -doc
+ifdef CI
+	@doxygen_junit --input doxy_result.log --output doxy_junit.xml
+	@test ! -s doxy_result.log
+endif
+
+# generate doxygen documentation
+# in CI enable logging of errors
+doc:
+ifdef CI
+	@echo "WARN_LOGFILE = doxy_result.log" >> $(DOXYFILE)
+endif
+	@$(DOXYGEN) $(DOXYFILE)
+
+# update target but ignore errors
+-%:
+	-@$(MAKE) --no-print-directory $*
