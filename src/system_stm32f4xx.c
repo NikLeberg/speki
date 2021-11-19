@@ -348,9 +348,9 @@
      through STLINK MCO pin of STM32F103 microcontroller. The frequency cannot be changed
      and is fixed at 8 MHz.
      Hardware configuration needed for Nucleo Board:
-     – SB54, SB55 OFF
-     – R35 removed
-     – SB16, SB50 ON */
+     ï¿½ SB54, SB55 OFF
+     ï¿½ R35 removed
+     ï¿½ SB16, SB50 ON */
 /* #define USE_HSE_BYPASS */
 
 #if defined(USE_HSE_BYPASS)
@@ -477,7 +477,6 @@ static void SystemInit_ExtMemCtl(void);
   * @brief  Setup the microcontroller system
   *         Initialize the Embedded Flash Interface, the PLL and update the
   *         SystemFrequency variable.
-  * @param  None
   * @retval None
   */
 void SystemInit(void)
@@ -554,7 +553,6 @@ void SystemInit(void)
   *         - The result of this function could be not correct when using fractional
   *           value for HSE crystal.
   *
-  * @param  None
   * @retval None
   */
 void SystemCoreClockUpdate(void)
@@ -571,9 +569,11 @@ void SystemCoreClockUpdate(void)
     case 0x00:  /* HSI used as system clock source */
       SystemCoreClock = HSI_VALUE;
       break;
+#if defined(HSE_VALUE)
     case 0x04:  /* HSE used as system clock source */
       SystemCoreClock = HSE_VALUE;
       break;
+#endif
     case 0x08:  /* PLL P used as system clock source */
        /* PLL_VCO = (HSE_VALUE or HSI_VALUE / PLL_M) * PLL_N
          SYSCLK = PLL_VCO / PLL_P

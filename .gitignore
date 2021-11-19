@@ -1,3 +1,4 @@
 obj
 dep
 bin
+doc/doxygen/*
