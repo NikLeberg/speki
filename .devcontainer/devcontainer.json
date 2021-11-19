@@ -9,6 +9,9 @@
 		// Add hostfile entry for easy access to WSL host ip.
 		"--add-host",
 		"host.docker.internal:host-gateway",
+		// Forward ST-Link v2 JTAG USB device from host to container.
+		"--device",
+		"/dev/bus/usb/001/006"
 	],
 	// IDs of extensions installed when the container is created.
 	"extensions": [

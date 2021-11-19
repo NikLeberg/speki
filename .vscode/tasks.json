@@ -11,7 +11,7 @@
     "problemMatcher": "$gcc",
     "tasks": [
         {
-            "label": "clean",
+            "label": "extra-clean",
             "command": "make clean",
             "presentation": {
                 "reveal": "never",
@@ -25,6 +25,19 @@
         {
             "label": "test",
             "command": "make test"
+        },
+        {
+            "label": "run",
+            "command": "make run"
+        },
+        {
+            "label": "extra-openocd",
+            "command": "openocd -f openocd_debug.cfg",
+            "isBackground": true
+        },
+        {
+            "label": "extra-openocd-stop",
+            "command": "pkill openocd",
         }
     ]
 }
