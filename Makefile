@@ -1,7 +1,7 @@
 # http://stackoverflow.com/questions/7004702/how-can-i-create-a-makefile-for-c-projects-with-src-obj-and-bin-subdirectories
 
 # output name
-TARGET ?= test
+TARGET ?= speki
 
 TOOLCHAIN_PATH ?= ''
 
@@ -10,6 +10,10 @@ CC = $(TOOLCHAIN_PATH)arm-none-eabi-gcc
 OC = $(TOOLCHAIN_PATH)arm-none-eabi-objcopy
 OD = $(TOOLCHAIN_PATH)arm-none-eabi-objdump
 SZ = $(TOOLCHAIN_PATH)arm-none-eabi-size
+
+# static check tools
+CPPCHECK = cppcheck
+CPPCHECKFLAGS = -i./lib -i./src/system_stm32f4xx.c -i./src/stm32f4xx_it.c
 
 # output structure
 OBJDIR ?= obj
@@ -75,10 +79,10 @@ OBJS := $(SRCS:%.c=$(OBJDIR)/%.o) $(SRCS_ASM:%.s=$(OBJDIR)/%.o)
 # =======
 
 # these are not real targets
-.PHONY: all clean dirs size
+.PHONY: all clean dirs size test cppcheck
 
 # default target
-all: $(BINDIR)/$(TARGET).elf | dirs
+all: $(BINDIR)/$(TARGET).elf $(BINDIR)/$(TARGET).bin $(BINDIR)/$(TARGET).lst | dirs
 
 debug: CFLAGS := -ggdb -O0 $(filter-out -O -O0 -O1 -O2 -O3 -Os -Ofast,$(CFLAGS))
 debug: $(BINDIR)/$(TARGET).elf | dirs
@@ -135,3 +139,14 @@ clean:
 	@echo "[RM] $(BINDIR)"
 	@$(RM) $(BINDIR)
 
+# run all static checks
+test: cppcheck
+
+# static check with cppcheck.
+# in CI export errors in junit-xml format
+cppcheck:
+	@$(CPPCHECK) . $(CPPCHECKFLAGS)
+ifdef CI
+	@$(CPPCHECK) . $(CPPCHECKFLAGS) --xml-version=2 2> cppcheck_result.xml 1>/dev/null
+	cppcheck_junit cppcheck_result.xml cppcheck_junit.xml
+endif
