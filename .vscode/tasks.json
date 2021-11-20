@@ -23,6 +23,10 @@
             "command": "make"
         },
         {
+            "label": "build debug",
+            "command": "make debug"
+        },
+        {
             "label": "test",
             "command": "make test"
         },
@@ -38,6 +42,10 @@
         {
             "label": "extra-openocd-stop",
             "command": "pkill openocd",
+            "presentation": {
+                "reveal": "never",
+                "focus": false,
+            }
         }
     ]
 }

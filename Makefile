@@ -78,6 +78,9 @@ SRCS_ASM += $(wildcard src/*.s)
 
 OBJS := $(SRCS:%.c=$(OBJDIR)/%.o) $(SRCS_ASM:%.s=$(OBJDIR)/%.o)
 
+# list of target files
+TARGETFILES := $(BINDIR)/$(TARGET).elf $(BINDIR)/$(TARGET).bin $(BINDIR)/$(TARGET).lst
+
 # TARGETS
 # =======
 
@@ -85,10 +88,10 @@ OBJS := $(SRCS:%.c=$(OBJDIR)/%.o) $(SRCS_ASM:%.s=$(OBJDIR)/%.o)
 .PHONY: all clean dirs size test cppcheck doccheck doc
 
 # default target
-all: $(BINDIR)/$(TARGET).elf $(BINDIR)/$(TARGET).bin $(BINDIR)/$(TARGET).lst | dirs
+all: $(TARGETFILES) | dirs
 
 debug: CFLAGS := -ggdb -O0 $(filter-out -O -O0 -O1 -O2 -O3 -Os -Ofast,$(CFLAGS))
-debug: $(BINDIR)/$(TARGET).elf | dirs
+debug: clean $(TARGETFILES) | dirs
 
 # link and create elf
 $(BINDIR)/$(TARGET).elf: $(OBJS) | dirs
