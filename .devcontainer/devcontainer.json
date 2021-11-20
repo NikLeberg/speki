@@ -1,18 +1,9 @@
 // For format details, see https://aka.ms/devcontainer.json.
 {
 	"name": "carme-docker",
-	"image": "nikolodion/speki-ci-docker",
-	"runArgs": [
-		// Add hostname so that bash shows a nice name.
-		"--hostname",
-		"carme-docker",
-		// Add hostfile entry for easy access to WSL host ip.
-		"--add-host",
-		"host.docker.internal:host-gateway",
-		// Forward ST-Link v2 JTAG USB device from host to container.
-		"--device",
-		"/dev/bus/usb/001/006"
-	],
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "carme-docker",
+	"workspaceFolder": "/workspace",
 	// IDs of extensions installed when the container is created.
 	"extensions": [
 		// C code Intellisense and code formater / helpers.
