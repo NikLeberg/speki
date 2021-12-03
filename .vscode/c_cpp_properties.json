@@ -2,9 +2,7 @@
     "configurations": [
         {
             "name": "Linux",
-            "includePath": [
-                "${workspaceFolder}/**"
-            ],
+            "compileCommands": "${workspaceFolder}/bin/compile_commands.json",
             "defines": [],
             "compilerPath": "/gcc-arm-none-eabi/bin/arm-none-eabi-gcc",
             "cStandard": "gnu17",

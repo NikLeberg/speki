@@ -31,8 +31,8 @@
             "command": "make test"
         },
         {
-            "label": "run",
-            "command": "make run"
+            "label": "flash",
+            "command": "make flash"
         },
         {
             "label": "extra-openocd",
