@@ -3,7 +3,7 @@
 # output name
 TARGET ?= speki
 
-TOOLCHAIN_PATH ?= ''
+TOOLCHAIN_PATH ?= /gcc-arm-none-eabi/bin/
 
 # toolchain
 CC = $(TOOLCHAIN_PATH)arm-none-eabi-gcc
@@ -14,6 +14,8 @@ SZ = $(TOOLCHAIN_PATH)arm-none-eabi-size
 # static check tools
 CPPCHECK = cppcheck
 CPPCHECKFLAGS = -i./lib -i./src/system_stm32f4xx.c -i./src/stm32f4xx_it.c
+CPPCHECKFLAGS += --enable=all --inconclusive --std=c11 --template=gcc
+CPPCHECKFLAGS += --suppress=unusedFunction --suppress=missingInclude --suppress=unmatchedSuppression
 DOXYGEN = doxygen
 DOXYFILE = doc/Doxyfile
 
@@ -56,7 +58,9 @@ include $(LIBDIR)/$(PERIPHDIR)/build.mk
 include $(LIBDIR)/$(CMSISDIR)/build.mk
 
 # compiler flags
-CFLAGS_BASE += -O2 -Wall -std=gnu11 -fdata-sections -ffunction-sections
+CFLAGS_BASE += -ggdb -Og # debug
+#CFLAGS_BASE += -O2	# release
+CFLAGS_BASE += -Wall -std=gnu11 -fdata-sections -ffunction-sections
 CFLAGS_BASE += -specs=nano.specs -u _printf_float
 CFLAGS_PROC += -mthumb -mcpu=cortex-m4 -mfloat-abi=softfp -mfpu=fpv4-sp-d16
 CFLAGS_DEF += -D$(PTYPE) -DUSE_STDPERIPH_DRIVER
@@ -79,7 +83,7 @@ SRCS_ASM += $(wildcard src/*.s)
 OBJS := $(SRCS:%.c=$(OBJDIR)/%.o) $(SRCS_ASM:%.s=$(OBJDIR)/%.o)
 
 # list of target files
-TARGETFILES := $(BINDIR)/$(TARGET).elf $(BINDIR)/$(TARGET).bin $(BINDIR)/$(TARGET).lst
+TARGETFILES := $(BINDIR)/$(TARGET).elf $(BINDIR)/$(TARGET).bin $(BINDIR)/$(TARGET).lst $(BINDIR)/compile_commands.json
 
 # TARGETS
 # =======
@@ -89,9 +93,6 @@ TARGETFILES := $(BINDIR)/$(TARGET).elf $(BINDIR)/$(TARGET).bin $(BINDIR)/$(TARGE
 
 # default target
 all: $(TARGETFILES) | dirs
-
-debug: CFLAGS := -ggdb -O0 $(filter-out -O -O0 -O1 -O2 -O3 -Os -Ofast,$(CFLAGS))
-debug: clean $(TARGETFILES) | dirs
 
 # link and create elf
 $(BINDIR)/$(TARGET).elf: $(OBJS) | dirs
@@ -127,7 +128,7 @@ $(OBJDIR)/%.o: %.c | dirs
 size: $(BINDIR)/$(TARGET).elf
 	@$(SZ) $(BINDIR)/$(TARGET).elf
 
-run: $(BINDIR)/$(TARGET).elf
+flash: $(BINDIR)/$(TARGET).elf
 	openocd -f openocd.cfg
 
 # create directories
@@ -152,10 +153,11 @@ test: cppcheck -doccheck
 
 # static check with cppcheck.
 # in CI export errors in junit-xml format
-cppcheck:
-	@$(CPPCHECK) . $(CPPCHECKFLAGS)
+cppcheck: $(BINDIR)/compile_commands.json
+	@$(CPPCHECK) $(CPPCHECKFLAGS) .
 ifdef CI
-	@$(CPPCHECK) . $(CPPCHECKFLAGS) --xml-version=2 2> cppcheck_result.xml 1>/dev/null
+	@$(CPPCHECK) $(CPPCHECKFLAGS) . \
+		--xml-version=2 2> cppcheck_result.xml 1>/dev/null
 	@cppcheck_junit cppcheck_result.xml cppcheck_junit.xml
 endif
 
@@ -178,3 +180,22 @@ endif
 # update target but ignore errors
 -%:
 	-@$(MAKE) --no-print-directory $*
+
+# rules to generate a compile_commands.json
+%.compdb_entry: %.c
+	@echo "    {" > $@
+	@echo "        \"command\": \"$(CC) $(CFLAGS) -c $<\"," >> $@
+	@echo "        \"directory\": \"$(CURDIR)\"," >> $@
+	@echo "        \"file\": \"$<\"" >> $@
+	@echo "    }," >> $@
+
+COMPDB_ENTRIES = $(addsuffix .compdb_entry, $(basename $(SRCS)))
+
+$(BINDIR)/compile_commands.json: $(COMPDB_ENTRIES)
+	@echo "[" > $@.tmp
+	@cat $^ >> $@.tmp
+	@sed '$$d' < $@.tmp > $@
+	@echo "    }" >> $@
+	@echo "]" >> $@
+	@rm $@.tmp
+	@rm $^
