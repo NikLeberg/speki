@@ -2,3 +2,4 @@ obj
 dep
 bin
 doc/doxygen/*
+.vscode/settings.json
