@@ -3,7 +3,7 @@
 	"name": "carme-docker",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "carme-docker",
-	"workspaceFolder": "/workspace",
+	"workspaceFolder": "/workspace/speki",
 	// IDs of extensions installed when the container is created.
 	"extensions": [
 		// C code Intellisense and code formater / helpers.
