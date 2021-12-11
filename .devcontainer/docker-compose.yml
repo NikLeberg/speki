@@ -20,4 +20,5 @@ services:
       - 'c 189:* rmw'
     # Keep container running
     command: /bin/sh -c "while sleep 1000; do :; done"
+    # CGroups dont work for the moment. Force priviledged mode.
     privileged: true

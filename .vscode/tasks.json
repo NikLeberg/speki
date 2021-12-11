@@ -23,10 +23,6 @@
             "command": "make"
         },
         {
-            "label": "build debug",
-            "command": "make debug"
-        },
-        {
             "label": "test",
             "command": "make test"
         },

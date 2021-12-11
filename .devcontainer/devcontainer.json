@@ -17,6 +17,9 @@
 	"settings": {
 		// Trigger format on save & paste
 		"editor.formatOnSave": true,
-		"editor.formatOnPaste": true
+		"editor.formatOnPaste": true,
+		// Set C/C++ extension to not sort includes and to not add settings.json
+		"C_Cpp.clang_format_sortIncludes": false,
+		"C_Cpp.autoAddFileAssociations": false,
 	},
 }
