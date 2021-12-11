@@ -61,8 +61,8 @@ include $(LIBDIR)/$(CMSISDIR)/build.mk
 CFLAGS_BASE += -ggdb -Og # debug
 #CFLAGS_BASE += -O2	# release
 CFLAGS_BASE += -Wall -std=gnu11 -fdata-sections -ffunction-sections
-CFLAGS_BASE += -specs=nano.specs -u _printf_float
-CFLAGS_PROC += -mthumb -mcpu=cortex-m4 -mfloat-abi=softfp -mfpu=fpv4-sp-d16
+CFLAGS_BASE += -specs=nano.specs
+CFLAGS_PROC += -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16
 CFLAGS_DEF += -D$(PTYPE) -DUSE_STDPERIPH_DRIVER
 CFLAGS_DEF += -DHSE_VALUE=25000000 -DSYSCALL_USART=USART1
 CFLAGS_DEF += -D_VOLATILE=volatile
