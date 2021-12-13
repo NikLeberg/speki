@@ -2,7 +2,7 @@
  * @file player.h
  * @author NikLeberg (niklaus.leuenb@gmail.com)
  * @brief Interface for audio playback with cs42l51 codec.
- * @version 0.2
+ * @version 0.3
  * @date 2021-12-11
  * 
  * @copyright Copyright (c) 2021 Niklaus Leuenberger
@@ -59,14 +59,6 @@ typedef int (*player_load_data_callback)(int16_t *data, size_t *length);
 int player_init(player_load_data_callback callback);
 
 /**
- * @brief Deinitialize audio hardware and release ressources.
- * 
- * @retval int 0 on success
- * @retval int -1 on failure
- */
-int player_deinit();
-
-/**
  * @brief Main loop of player module.
  * 
  * Needs to be called periodically, at least once for every: size of audiofile
@@ -93,3 +85,12 @@ int player_play();
  * @retval int -1 on failure
  */
 int player_stop();
+
+/**
+ * @brief Set output volume.
+ * 
+ * @note The codec states a volume level of +12.0 dB for the maximum setting.
+ * 
+ * @param volume 0 = mute, 255 = max
+ */
+void player_set_volume(uint8_t volume);
