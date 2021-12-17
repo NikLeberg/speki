@@ -13,7 +13,7 @@ SZ = $(TOOLCHAIN_PATH)arm-none-eabi-size
 
 # static check tools
 CPPCHECK = cppcheck
-CPPCHECKFLAGS = -i./lib -i./src/system_stm32f4xx.c -i./src/stm32f4xx_it.c
+CPPCHECKFLAGS = -i./lib -i./src/system_stm32f4xx.c -i./src/stm32f4xx_it.c -i./src/syscalls.c
 CPPCHECKFLAGS += --enable=all --inconclusive --std=c11 --template=gcc
 CPPCHECKFLAGS += --suppress=unusedFunction --suppress=missingInclude --suppress=unmatchedSuppression
 DOXYGEN = doxygen
