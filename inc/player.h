@@ -42,8 +42,8 @@
  * 
  * @param[in,out] data pointer to a buffer of size PLAYER_BUFFER_SIZE
  * @param[out] length size of valid buffer data, \ref PLAYER_BUFFER_SIZE or less
- * @retval int 0 on success (valid data and length, will continue playing)
- * @retval int -1 on failure (invalid data or length, will stop playing)
+ * @retval 0 on success (valid data and length, will continue playing)
+ * @retval -1 on failure (invalid data or length, will stop playing)
  */
 typedef int (*player_load_data_callback)(int16_t *data, size_t *length);
 
@@ -53,8 +53,8 @@ typedef int (*player_load_data_callback)(int16_t *data, size_t *length);
  * Configures the audio hardware, sets up DMA stream and interrupt.
  * 
  * @param callback function that gets called when new data should be read in
- * @retval int 0 on success
- * @retval int -1 on failure
+ * @retval 0 on success
+ * @retval -1 on failure
  */
 int player_init(player_load_data_callback callback);
 
@@ -65,24 +65,24 @@ int player_init(player_load_data_callback callback);
  * in halfwords divided by PLAYER_BUFFER_SIZE. Will return as fast as possible
  * if nothing has to be done.
  * 
- * @retval int 0 on success
- * @retval int -1 on failure
+ * @retval 0 on success
+ * @retval -1 on failure
  */
 int player_loop();
 
 /**
  * @brief Start playing audio.
  * 
- * @retval int 0 on success
- * @retval int -1 on failure
+ * @retval 0 on success
+ * @retval -1 on failure
  */
 int player_play();
 
 /**
  * @brief Stop playing audio.
  * 
- * @retval int 0 on success
- * @retval int -1 on failure
+ * @retval 0 on success
+ * @retval -1 on failure
  */
 int player_stop();
 
