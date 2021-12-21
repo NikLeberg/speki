@@ -88,7 +88,7 @@ int main(void) {
 }
 
 void assert_failed(uint8_t *file, uint32_t line) {
-    printf("\r\nassert_failed(). file: %s, line: %d\r\n", file, line);
+    printf("\r\nassert_failed(). file: %s, line: %d\r\n", file, (int)line);
     while (1) {
         ;
     }
