@@ -175,7 +175,7 @@ int player_loop() {
         // then overwrite the unsent data.) So up to PLAYER_BUFFER_SIZE of data
         // will not be sent out. But "normal" sound data would anyway start near
         // silent and PLAYER_BUFFER_SIZE relative to the whole audio stream size
-        // is less than 1 % .
+        // is less than 1 %.
         break;
     case (PLAYER_STOPPING):
         // We are stopping and ISR is sending the last data. Wait until all data
@@ -232,7 +232,7 @@ void DMA1_Stream4_IRQHandler(void) {
 }
 
 static size_t load_data(int half) {
-    size_t length;
+    size_t length = PLAYER_BUFFER_SIZE;
     if (g_callback(&g_buffer[half * PLAYER_BUFFER_SIZE], &length)) {
         // On error give a length of 0 back to initiate a stop sequence.
         length = 0;
