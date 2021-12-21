@@ -3,8 +3,8 @@
 Ein Audioplayer mit "Speki" auf dem CARME-M4-Kit unter Zuhilfenahme des Fast Fourier Transform Algorithmus. Erstellt als Projekt für das Modul BTE5053 Hardwarenahe Softwareentwicklung.
 
 ## Dokumentation
-Infos über das `Was?` finden sich im [Pflichtenheft](doc/Pflichtenheft.md).
-Über das `Wie?` informiert das [DFD](doc/DFD/DFD.md) und der Doxygen annotierte Quellcode.
+Infos über das `Was?` finden sich im [Pflichtenheft](./doc/Pflichtenheft.md).
+Über das `Wie?` informiert das [DFD](./doc/DFD/DFD.md) und der Doxygen annotierte Quellcode.
 Die Dokumentation lässt sich per Doxygen mit `doxygen doc/Doxyfile` in den Ordner `doc/doxygen/html` generieren.
 Alternativ findet sich das aktuellste Exemplar auf [GitLab-Pages](http://leuen4.pages.ti.bfh.ch/speki).
 
