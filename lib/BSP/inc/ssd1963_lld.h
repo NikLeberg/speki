@@ -90,6 +90,13 @@ extern "C" {
  */
 #define GL_LCD			((SSD1963_T *) (GL_LCD_BASE))
 
+/**
+ * @brief	LCD Tear Effect GPIO.
+ */
+#define GUI_GPIO_TEAR_EFFECT_PORT	GPIOC
+#define GUI_GPIO_TEAR_EFFECT_PIN	GPIO_Pin_13
+#define GUI_GPIO_TEAR_EFFECT 		GUI_GPIO_TEAR_EFFECT_PORT, GUI_GPIO_TEAR_EFFECT_PIN
+
 /*----- Data types ---------------------------------------------------------*/
 /**
  * @struct	_SSD1963_T

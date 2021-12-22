@@ -93,12 +93,7 @@ void SSD1963_WriteArea(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
                        uint16_t *pData);
 void SSD1963_SetTearingCfg(uint8_t state, uint8_t mode);
 void SSD1963_GetDeviceDescriptorBlock(uint16_t *ddb);
-
-/* Low level driver */
-void SSD1963_LLD_Init(void);
-void SSD1963_WriteCommand(uint16_t cmd);
-void SSD1963_WriteData(uint16_t data);
-uint16_t SSD1963_ReadData(void);
+void SSD1963_TearEffectInterruptHandler(void);
 
 /*----- Data ---------------------------------------------------------------*/
 

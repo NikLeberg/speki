@@ -77,6 +77,7 @@ extern "C" {
 /*----- Header-Files -------------------------------------------------------*/
 #include <stdint.h>					/* Standard integer formats				*/
 #include <carme.h>
+#include "ssd1963_lld.h"			/* SSD1963 Graphic-Controller driver	*/
 
 /*----- Macros -------------------------------------------------------------*/
 /**
@@ -91,6 +92,7 @@ extern "C" {
 static CARME_Port_Pin_t LCD_Port_Pin[] = {
         { GUI_GPIO_BACKLIGHT, GPIO_Mode_OUT },	/**< LCD Backlight			*/
         { CARME_AGPIO_9, GPIO_Mode_IN },		/**< LCD/VGA				*/
+        { GUI_GPIO_TEAR_EFFECT, GPIO_Mode_IN },	/**< LCD Tear Effect		*/
 };
 
 /*----- Function prototypes ------------------------------------------------*/
@@ -118,7 +120,25 @@ void SSD1963_LLD_Init(void) {
 	CARME_GPIO_Init(LCD_Port_Pin, &GPIO_InitStruct,
 	                sizeof(LCD_Port_Pin) / sizeof(CARME_Port_Pin_t));
 
+	/* Enable backlight */
 	GPIO_WriteBit(GUI_GPIO_BACKLIGHT, 1);
+
+    /* Enable the external interrupt for the tear effect pin */
+    SYSCFG_EXTILineConfig(
+        CARME_GPIO_TO_EXTIPORTSOURCE(GUI_GPIO_TEAR_EFFECT_PORT),
+        CARME_GPIO_TO_EXTIPINSOURCE(GUI_GPIO_TEAR_EFFECT_PIN));
+    EXTI_InitTypeDef EXTI_InitStruct;
+    EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
+    EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Rising;
+    EXTI_InitStruct.EXTI_LineCmd = ENABLE;
+    EXTI_InitStruct.EXTI_Line = CARME_GPIO_TO_EXTILINE(GUI_GPIO_TEAR_EFFECT_PIN);
+    EXTI_Init(&EXTI_InitStruct);
+    NVIC_InitTypeDef NVIC_InitStruct;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 0x0F;
+    NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0x0F;
+    NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_InitStruct.NVIC_IRQChannel = EXTI15_10_IRQn;
+    NVIC_Init(&NVIC_InitStruct);
 }
 
 #ifdef __cplusplus
