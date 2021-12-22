@@ -326,12 +326,12 @@ void SSD1963_WriteArea(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
 void SSD1963_SetTearingCfg(uint8_t state, uint8_t mode) {
 
 	if (state == 1) {
-		SSD1963_WriteCommand(CMD_SET_TEAR_SCANLINE);
+		SSD1963_WriteCommand(CMD_SET_TEAR_ON);
 		SSD1963_WriteData(mode & 0x01);
 	}
 	else {
-		SSD1963_WriteCommand(0x34);
-	}
+        SSD1963_WriteCommand(CMD_SET_TEAR_OFF);
+    }
 }
 
 /**
