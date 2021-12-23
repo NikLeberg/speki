@@ -365,7 +365,7 @@ extern "C" {
  *			#ff_req_grant(), ff_rel_grant(), ff_del_syncobj() and
  *			#ff_cre_syncobj() function must be added to the project.
  */
-#define _FS_REENTRANT	1
+#define _FS_REENTRANT	0
 
 /**
  * \brief	Timeout period in unit of time ticks
