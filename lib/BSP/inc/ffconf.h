@@ -71,7 +71,7 @@ extern "C" {
  * \arg 0:	Read/Write
  * \arg 1:	Read only
  */
-#define _FS_READONLY	0
+#define _FS_READONLY	1
 
 /**
  * \brief	The _FS_MINIMIZE option defines minimization level to remove API
@@ -386,7 +386,7 @@ extern "C" {
  * \arg 0:		Disable
  * \arg >=1:	Enable
  */
-#define	_FS_LOCK	8
+#define	_FS_LOCK	0
 
 #ifdef __cplusplus
 }
