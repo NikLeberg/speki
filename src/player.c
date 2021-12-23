@@ -102,7 +102,7 @@ int player_init(player_load_data_callback callback) {
     DMA_config.DMA_PeripheralBaseAddr = (uint32_t)&CODEC_I2S->DR;
     DMA_config.DMA_Memory0BaseAddr = (uint32_t)g_buffer;
     DMA_config.DMA_DIR = DMA_DIR_MemoryToPeripheral;
-    DMA_config.DMA_BufferSize = 2 * PLAYER_BUFFER_SIZE;
+    DMA_config.DMA_BufferSize = MAX_HALF * PLAYER_BUFFER_SIZE;
     DMA_config.DMA_MemoryInc = DMA_MemoryInc_Enable;
     DMA_config.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
     DMA_config.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
@@ -163,7 +163,7 @@ int player_loop() {
                     // We got less than the buffersize of data back. Fill the
                     // remainder of the buffer with silence.
                     size_t offset = i * PLAYER_BUFFER_SIZE + length;
-                    size_t remainder = (PLAYER_BUFFER_SIZE - length) * 2;
+                    size_t remainder = (PLAYER_BUFFER_SIZE - length) * sizeof(int16_t);
                     memset(g_buffer + offset, 0, remainder);
                     g_state = PLAYER_STOPPING;
                 }
@@ -181,7 +181,7 @@ int player_loop() {
         // We are stopping and ISR is sending the last data. Wait until all data
         // is sent and then clear buffer.
         if (!g_flags.valid[LOWER_HALF] && !g_flags.valid[UPPER_HALF]) {
-            memset(g_buffer, 0, 4 * PLAYER_BUFFER_SIZE);
+            memset(g_buffer, 0, sizeof(g_buffer[0]) * MAX_HALF * PLAYER_BUFFER_SIZE);
             g_state = PLAYER_STOPPED;
         }
     }
