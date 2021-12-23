@@ -197,9 +197,6 @@ void SSD1963_Init(void) {
 	SSD1963_WriteData(0x0F);	/* Set GPIO0 as output						*/
 	SSD1963_WriteData(0x01);	/* GPIO[3:0] used as normal GPIOs			*/
 
-	/* Enable Tear Effect */
-	SSD1963_SetTearingCfg(1, 0);
-
 	/* Clear display to black */
 	SSD1963_FillArea(SCRN_LEFT, SCRN_TOP, SCRN_RIGHT, SCRN_BOTTOM, 0x00);
 	SSD1963_DisplayOn();		/* Turn on display							*/
@@ -352,17 +349,6 @@ void SSD1963_GetDeviceDescriptorBlock(uint16_t *ddb) {
 	ddb[0] = SSD1963_ReadData();
 	ddb[1] = SSD1963_ReadData();
 	ddb[2] = SSD1963_ReadData();
-}
-
-/**
- *****************************************************************************
- * @brief		Handle Tear Effect Interrupt.
- * 
- * @return		None
- *****************************************************************************
- */
-void SSD1963_TearEffectInterruptHandler(void) {
-	; // ToDo
 }
 
 #ifdef __cplusplus

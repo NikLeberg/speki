@@ -130,6 +130,15 @@ static inline void LCD_WritePixel(uint16_t x, uint16_t y, uint16_t pixel) {
 	SSD1963_WritePixel(x, y, pixel);
 }
 
+/**
+ * @brief 		Enable or disable update interrupt.
+ * 
+ * @param[in]	state	1: enable, 0: disable
+ */
+static inline void LCD_UpdateCallbackCfg(uint8_t state) {
+	SSD1963_SetTearingCfg(state, 0);
+}
+
 /*----- EOF ----------------------------------------------------------------*/
 
 #ifdef __cplusplus

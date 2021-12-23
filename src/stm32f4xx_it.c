@@ -46,7 +46,7 @@ extern "C" {
 #include <carme_io1.h>              /* CARME IO1 Module                     */
 #include <can.h>                    /* CARME CAN Module                     */
 #include "stm32f4xx_it.h"
-#include "ssd1963.h"			    /* SSD1963 Graphic-Controller			*/
+#include "lcd.h"			        /* Simple graphic library				*/
 
 /*----- Macros -------------------------------------------------------------*/
 
@@ -180,7 +180,7 @@ void EXTI15_10_IRQHandler(void)
     if (EXTI_GetITStatus(CARME_GPIO_TO_EXTILINE(GUI_GPIO_TEAR_EFFECT_PIN)) != RESET) {
         /* CARME LCD Tear Effect Interrupt Handler */
         EXTI_ClearITPendingBit(CARME_GPIO_TO_EXTILINE(GUI_GPIO_TEAR_EFFECT_PIN));
-        SSD1963_TearEffectInterruptHandler();
+        LCD_DispatchUpdateCallback();
     }
 
     if (EXTI_GetITStatus(CARME_GPIO_TO_EXTILINE(CARME_IO1_BUTTON1_PIN)) != RESET) {

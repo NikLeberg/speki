@@ -137,6 +137,11 @@ typedef enum _BMP_STATUS
 	BMP_ERROR_NUM			/**< Other error								*/
 } BMP_STATUS;
 
+/**
+ * @brief 	Prototype for update callback
+ */
+typedef void(*lcd_update_callback_t)(void);
+
 /*----- Function prototypes ------------------------------------------------*/
 /* Text functionality */
 void LCD_SetTextColor(LCDCOLOR Color);
@@ -177,6 +182,11 @@ uint16_t LCD_BMP_GetDepth(BMP *bmp);
 BMP_STATUS LCD_BMP_GetPixelRGB(BMP *bmp, uint32_t x, uint32_t y, uint8_t *r,
                                uint8_t *g, uint8_t *b);
 const char* LCD_BMP_GetErrorDescription(uint8_t errorcode);
+
+/* General functions */
+void LCD_RegisterUpdateCallback(lcd_update_callback_t callback);
+void LCD_UpdateCallbackCfg(uint8_t state);
+void LCD_DispatchUpdateCallback(void);
 
 /*----- Data ---------------------------------------------------------------*/
 
