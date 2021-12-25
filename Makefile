@@ -79,6 +79,8 @@ LDFLAGS += -Wl,--gc-sections -Wl,--defsym=malloc_getpagesize_P=0x80
 
 SRCS += $(wildcard src/*.c)
 SRCS_ASM += $(wildcard src/*.s)
+SRCS += $(wildcard src/system/*.c)
+SRCS_ASM += $(wildcard src/system/*.s)
 
 OBJS := $(SRCS:%.c=$(OBJDIR)/%.o) $(SRCS_ASM:%.s=$(OBJDIR)/%.o)
 
