@@ -1,94 +1,106 @@
-#include <stdio.h>
 #include <stm32f4xx.h>
 #include <carme.h>
 #include <carme_io1.h>
 #include <carme_io2.h>
-#include <uart.h>
+#include <stdlib.h>
+
+#include "utils.h"
+#include "songs.h"
 #include "player.h"
-#include <ff.h>
-#include <cs42l51.h>
+#include "display.h"
 
-FATFS main_fs;
+#define MAX_SONGS 10
+static song_t songs[MAX_SONGS];
+static size_t songs_count = MAX_SONGS;
+static song_t *selected_song;
 
-static FIL f;
+int load_audio_data(int16_t *data, size_t *length);
 
-int load_audio_data(int16_t *data, size_t *length) {
-    if (!f.fs) {
-        return -1;
-    }
-    size_t bytes;
-    f_read(&f, data, 2 * PLAYER_BUFFER_SIZE, &bytes);
-    *length = bytes / 2; // we read bytes but data is in halfwords
-    if (bytes < 2 * PLAYER_BUFFER_SIZE) {
-        f_close(&f);
-        f.fs = NULL;
-    }
-    return 0;
-}
+void handle_input();
 
 int main(void) {
-    // init USART for printf
-    USART_InitTypeDef USART_init;
-    USART_StructInit(&USART_init);
-    USART_init.USART_BaudRate = 115200;
-    CARME_UART_Init(CARME_UART0, &USART_init);
-    setvbuf(stdout, NULL, _IONBF, 0); // disable linebuffering
-    printf("\033c");                  // reset to initial state
-    printf("\033[2J");                // clear screen
-    printf("\033[?25l");              // cursor off
-    printf("Welcome to CARME-M4.\n");
-
     CARME_IO1_Init();
     CARME_IO2_Init();
 
-    if (f_mount(&main_fs, "0:", 1) != FR_OK) {
-        while (1) {
-            ;
-        }
-    }
+    utils_init();
+
+    songs_init();
+    songs_list_songs(songs, &songs_count);
 
     player_init(load_audio_data);
-    player_play();
+
+    display_init();
+    display_set_list(songs, songs_count);
 
     // infinite loop
     while (1) {
-        if (player_loop()) {
-            puts("player stopped");
-        }
-        // open file
-        uint8_t buttons;
-        CARME_IO1_BUTTON_Get(&buttons);
-        if (buttons) {
-            f_close(&f);
-            player_play();
-        }
-        if (buttons & 0x01) {
-            f_open(&f, "ACCORD~1.PCM", FA_OPEN_EXISTING | FA_READ);
-        } else if (buttons & 0x02) {
-            f_open(&f, "ATMOSP~1.PCM", FA_OPEN_EXISTING | FA_READ);
-        } else if (buttons & 0x04) {
-            f_open(&f, "MELANC~1.PCM", FA_OPEN_EXISTING | FA_READ);
-        } else if (buttons & 0x08) {
-            //
-        }
-        // volume control (0 - 955)
-        static uint16_t last_value;
-        uint16_t value;
-        CARME_IO2_ADC_Get(CARME_IO2_ADC_PORT0, &value);
-        value = (value / 8) + 128;
-        if (value > last_value + 1 || value < last_value - 1) {
-            // vol: min 128, max 255
-            // pot: min 0, max 955
-            CS42L51_VolumeOutCtrl(value);
-            printf("vol: %d\n", value);
-            last_value = value;
+        player_loop();
+        display_loop();
+        // React to button presses and poti changes every 100 ms.
+        static uint32_t last_ticks;
+        uint32_t ticks = get_ticks();
+        if (ticks - last_ticks > 100) {
+            last_ticks = ticks;
+            handle_input();
         }
     }
     return 0;
 }
 
+int load_audio_data(int16_t *data, size_t *length) {
+    int speki[DISPLAY_NUM_OF_SPECTOGRAM_BARS];
+    for (int i = 0; i < DISPLAY_NUM_OF_SPECTOGRAM_BARS; ++i) {
+        speki[i] = rand();
+    }
+    display_set_spectogram(speki, RAND_MAX);
+    return songs_read_song(selected_song, data, length);
+}
+
+void handle_input() {
+    // React to (new) button presses:
+    // Button 0: Play currently selected song (changes display to song view).
+    // Button 1: Stop playing song (changes display to list view).
+    // Button 2: Move selection down in list (has only an effect in list view).
+    // Button 3: Move selection up in list (has only an effect in list view).
+    static uint8_t last_buttons;
+    uint8_t current_buttons;
+    CARME_IO1_BUTTON_Get(&current_buttons);
+    uint8_t changed_buttons = current_buttons & ~last_buttons;
+    last_buttons = current_buttons;
+    if (changed_buttons & 0x01) {
+        // play
+        // get selected song from display
+        display_get_selection(&selected_song);
+        // load the song (should not fail as the song was already validated)
+        songs_open_song(selected_song->filename, selected_song);
+        // start player
+        player_play();
+        // display song info
+        display_set_song(selected_song);
+    } else if (changed_buttons & 0x02) {
+        // stop
+        player_stop();
+        display_set_list(songs, songs_count);
+    } else if (changed_buttons & 0x04) {
+        // move down
+        display_move_selection(0);
+    } else if (changed_buttons & 0x08) {
+        // move up
+        display_move_selection(1);
+    }
+    // React to (significant) potentiometer changes.
+    static uint16_t last_poti;
+    uint16_t poti;
+    CARME_IO2_ADC_Get(CARME_IO2_ADC_PORT0, &poti);
+    if (abs(poti - last_poti) > 10) {
+        last_poti = poti;
+        // map poti value from [0 to 955] to a volume of [128 to 255]
+        uint8_t volume = map_value(poti, 0, 955, 128, 255);
+        player_set_volume(volume);
+    }
+}
+
 void assert_failed(uint8_t *file, uint32_t line) {
-    printf("\r\nassert_failed(). file: %s, line: %d\r\n", file, (int)line);
     while (1) {
         ;
     }
