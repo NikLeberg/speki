@@ -30,7 +30,7 @@ void delay_ms(uint16_t ms);
  * @brief Get the current system ticks.
  * 
  * After calling \ref utils_init(), an internal counter is incremented every
- * milisecond through an ISR. It starts with a value of 0. After \ref UINT32_MAX
+ * milisecond through an ISR. It starts with a value of 0. After 2^32-1
  * miliseconds the counter wraps around. This is after 49.7 days.
  * 
  * @return ticks in milliseconds
