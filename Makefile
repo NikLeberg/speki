@@ -5,6 +5,9 @@ TARGET ?= speki
 
 TOOLCHAIN_PATH ?= /gcc-arm-none-eabi/bin/
 
+# type of build "debug" or "release"
+BUILD_TYPE = debug
+
 # toolchain
 CC = $(TOOLCHAIN_PATH)arm-none-eabi-gcc
 OC = $(TOOLCHAIN_PATH)arm-none-eabi-objcopy
@@ -60,8 +63,11 @@ include $(LIBDIR)/$(PERIPHDIR)/build.mk
 include $(LIBDIR)/$(CMSISDIR)/build.mk
 
 # compiler flags
-CFLAGS_BASE += -ggdb -O0 # debug
-# CFLAGS_BASE += -O4 -flto # release
+ifeq ($(BUILD_TYPE), debug)
+	CFLAGS_BASE += -ggdb -O0 -DUSE_FULL_ASSERT
+else
+	CFLAGS_BASE += -O4
+endif
 CFLAGS_BASE += -Wall -std=gnu11 -fdata-sections -ffunction-sections
 CFLAGS_BASE += -specs=nano.specs
 CFLAGS_PROC += -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16
