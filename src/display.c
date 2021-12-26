@@ -230,9 +230,7 @@ int display_set_spectogram(int spectogram[DISPLAY_NUM_OF_SPECTOGRAM_BARS], int m
     // in output) is necessary because the pixels on the LCD are counted from
     // the top down.
     for (int i = 0; i < DISPLAY_NUM_OF_SPECTOGRAM_BARS; ++i) {
-        g_spectogram[i] =
-            SPECTOGRAM_HEIGHT - map_value(spectogram[i], 0, max_value,
-                                          SPECTOGRAM_START_Y, SPECTOGRAM_END_Y);
+        g_spectogram[i] = map_value(spectogram[i], 0, max_value, SPECTOGRAM_HEIGHT, SPECTOGRAM_START_Y);
     }
     g_flags.spectogram_updated = 1;
     return 0;
@@ -267,8 +265,8 @@ static void update_spectogram() {
         for (int i = 0; i < DISPLAY_NUM_OF_SPECTOGRAM_BARS; ++i) {
             int bar_start_x = SPECTOGRAM_START_X + (MARGIN / 2U) + i * (SPECTOGRAM_WIDTH + MARGIN);
             LCD_FillArea(bar_start_x, SPECTOGRAM_START_Y,
-                         bar_start_x + SPECTOGRAM_WIDTH, SPECTOGRAM_HEIGHT - g_spectogram[i], GUI_COLOR_BLACK);
-            LCD_FillArea(bar_start_x, SPECTOGRAM_HEIGHT - g_spectogram[i],
+                         bar_start_x + SPECTOGRAM_WIDTH, g_spectogram[i], GUI_COLOR_BLACK);
+            LCD_FillArea(bar_start_x, g_spectogram[i],
                          bar_start_x + SPECTOGRAM_WIDTH, SPECTOGRAM_END_Y, GUI_COLOR_WHITE);
         }
     }
