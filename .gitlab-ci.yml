@@ -1,5 +1,5 @@
 default:
-  image: nikolodion/speki-ci-docker
+  image: $CI_REGISTRY/leuen4/container_builder/speki-ci
 
 stages:
   - build
