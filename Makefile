@@ -5,8 +5,8 @@ TARGET ?= speki
 
 TOOLCHAIN_PATH ?= /gcc-arm-none-eabi/bin/
 
-# type of build "debug" or "release"
-BUILD_TYPE = debug
+# type of build "debug", "release-debug" or "release"
+BUILD_TYPE = release-debug
 
 # toolchain
 CC = $(TOOLCHAIN_PATH)arm-none-eabi-gcc
@@ -65,8 +65,12 @@ include $(LIBDIR)/$(CMSISDIR)/build.mk
 # compiler flags
 ifeq ($(BUILD_TYPE), debug)
 	CFLAGS_BASE += -ggdb -O0 -DUSE_FULL_ASSERT
-else
+else ifeq ($(BUILD_TYPE), release-debug)
+	CFLAGS_BASE += -O4 -ggdb
+else ifeq ($(BUILD_TYPE), release)
 	CFLAGS_BASE += -O4
+else
+$(error BUILD_TYPE needs to be set to either debug, release-debug or release)
 endif
 CFLAGS_BASE += -Wall -std=gnu11 -fdata-sections -ffunction-sections
 CFLAGS_BASE += -specs=nano.specs
