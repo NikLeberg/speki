@@ -38,6 +38,62 @@ void delay_ms(uint16_t ms);
 uint32_t get_ticks();
 
 /**
+ * @brief Number of available concurrent profilers.
+ * 
+ * Parameter index of profile_* functions is valid from 0 up to
+ * UTIL_MAX_PROFILES - 1.
+ */
+#define UTIL_MAX_PROFILES (5)
+
+/**
+ * @brief Start profiling.
+ * 
+ * Should be called once before the other profile_* functions will be called.
+ * 
+ * @param index Index of the profile. 0 up to UTIL_MAX_PROFILES - 1
+ */
+void profile_start(int index);
+
+/**
+ * @brief Enter the profiled section.
+ * 
+ * Should be called just before entering the function or section of code that is
+ * to be profiled.
+ * 
+ * @param index Index of the profile. 0 up to UTIL_MAX_PROFILES - 1
+ */
+void profile_enter(int index);
+
+/**
+ * @brief Leave the profiled section.
+ * 
+ * Should be called after leaving the function or section of code that is to be
+ * profiled.
+ * 
+ * @param index Index of the profile. 0 up to UTIL_MAX_PROFILES - 1
+ */
+void profile_leave(int index);
+
+/**
+ * @brief Stop profiling.
+ * 
+ * Call to get the profiling stats of the profiled section. Even though it is
+ * called "stop" the profiling can be continued and at a later time this
+ * function can be called again. To reset profiling one should call
+ * profile_start().
+ * 
+ * @note Any parameter (except index) can be NULL if its value isnt of interest.
+ * 
+ * @param index Index of the profile. 0 up to UTIL_MAX_PROFILES - 1
+ * @param[out] duration for how many ticks was profiled (from start to stop)
+ * @param[out] min longest ticks took (between enter and leave)
+ * @param[out] max minimal ticks took (between enter and leave)
+ * @param[out] avg average ticks took (between enter and leave)
+ * @param[out] load percentage of all the used ticks compared to the duration
+ */
+void profile_stop(int index, uint32_t *duration, uint32_t *min, uint32_t *max, uint32_t *avg, float *load);
+
+/**
  * @brief Maps a value from one range to another.
  * 
  * @note It is save for any of the ranges to have a reversed polarity e.g. when
