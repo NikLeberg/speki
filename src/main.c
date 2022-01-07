@@ -8,6 +8,7 @@
 #include "songs.h"
 #include "player.h"
 #include "display.h"
+#include "dft.h"
 
 #define MAX_SONGS 10
 static song_t songs[MAX_SONGS];
@@ -34,14 +35,16 @@ int main(void) {
 
     // infinite loop
     while (1) {
-        player_loop();
-        display_loop();
+        player_loop();  // 36.0 %, 25.8 %, 25.8 %
+        display_loop(); // 45.2 %, 47.3 %
         // React to button presses and poti changes every 100 ms.
         static uint32_t last_ticks;
         uint32_t ticks = get_ticks();
         if (ticks - last_ticks > 100) {
             last_ticks = ticks;
+            profile_enter(3);
             handle_input();
+            profile_leave(3);
         }
     }
     return 0;
@@ -81,6 +84,17 @@ void handle_input() {
         // stop
         player_stop();
         display_set_list(songs, songs_count);
+        // profile
+        uint32_t min1, max1, avg1;
+        float load1;
+        profile_stop(1, NULL, &min1, &max1, &avg1, &load1);
+        uint32_t min2, max2, avg2;
+        float load2;
+        profile_stop(2, NULL, &min2, &max2, &avg2, &load2);
+        uint32_t min3, max3, avg3;
+        float load3;
+        profile_stop(3, NULL, &min3, &max3, &avg3, &load3);
+        delay_ms(1);
     } else if (changed_buttons & 0x04) {
         // move down
         display_move_selection(0);
