@@ -18,9 +18,11 @@
  * @brief Size for audio buffer.
  * 
  * A PCM stream requested with \ref player_load_data_callback should have this
- * many halfwords (two bytes) as length.
+ * many halfwords (two bytes) as length. With the default value of 1920 each
+ * buffer chunk is exactly 20 ms audio duration. (1920 samples divided by 2 for
+ * left and right data, divided by 48 kHz = 20 ms)
  */
-#define PLAYER_BUFFER_SIZE (1024U)
+#define PLAYER_BUFFER_SIZE (1920U)
 
 /**
  * @brief Load data callback prototype.
