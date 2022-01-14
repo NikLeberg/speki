@@ -106,4 +106,4 @@ int display_set_song(const song_t *song);
  * @retval 0 on success
  * @retval -1 on failure (wrong mode)
  */
-int display_set_spectogram(int spectogram[DISPLAY_NUM_OF_SPECTOGRAM_BARS], int max_value);
+int display_set_spectogram(uint32_t spectogram[DISPLAY_NUM_OF_SPECTOGRAM_BARS], uint32_t max_value);

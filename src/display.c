@@ -39,8 +39,8 @@
  * +=============================+
  */
 
-#include <stdio.h>
 #include <lcd.h>
+#include <stdio.h>
 
 #include "display.h"
 #include "utils.h"
@@ -103,7 +103,7 @@ static size_t g_list_length;
 static int g_list_selection;
 
 static const song_t *g_current_song;
-static int g_spectogram[DISPLAY_NUM_OF_SPECTOGRAM_BARS];
+static uint16_t g_spectogram[DISPLAY_NUM_OF_SPECTOGRAM_BARS];
 
 static struct {
     __IO int update_done;
@@ -221,7 +221,7 @@ int display_set_song(const song_t *song) {
     return 0;
 }
 
-int display_set_spectogram(int spectogram[DISPLAY_NUM_OF_SPECTOGRAM_BARS], int max_value) {
+int display_set_spectogram(uint32_t spectogram[DISPLAY_NUM_OF_SPECTOGRAM_BARS], uint32_t max_value) {
     if (g_state != DISPLAY_SONG && g_state != DISPLAY_INIT_SONG) {
         return -1;
     }
