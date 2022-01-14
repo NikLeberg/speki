@@ -42,9 +42,7 @@ int main(void) {
         uint32_t ticks = get_ticks();
         if (ticks - last_ticks > 100) {
             last_ticks = ticks;
-            profile_enter(3);
             handle_input();
-            profile_leave(3);
         }
     }
     return 0;
@@ -52,8 +50,12 @@ int main(void) {
 
 int load_audio_data(int16_t *data, size_t *length) {
     int err = songs_read_song(selected_song, data, length);
-    //the audio saples, that will be transformed with dft are out of sync with the music being played by 20ms
-    //however, because the calculation uses some time, it may just be in sync again
+    // The audio samples, that will be transformed with dft are out of sync with
+    // the music being played by 20ms. Because in this function call the next
+    // chunk of samples is preloaded while the previous is still playing. So by
+    // calculating the dft based on this new chunk, and sending it to the lcd
+    // we are out of sync. However, because the dft calculation uses quite some
+    // time, it may just be in sync again.
     uint32_t magnitude[DISPLAY_NUM_OF_SPECTOGRAM_BARS + 1];
     dft_transform(data, magnitude);
     display_set_spectogram(magnitude + 1, RAND_MAX);
@@ -85,17 +87,6 @@ void handle_input() {
         // stop
         player_stop();
         display_set_list(songs, songs_count);
-        // profile
-        uint32_t min1, max1, avg1;
-        float load1;
-        profile_stop(1, NULL, &min1, &max1, &avg1, &load1);
-        uint32_t min2, max2, avg2;
-        float load2;
-        profile_stop(2, NULL, &min2, &max2, &avg2, &load2);
-        uint32_t min3, max3, avg3;
-        float load3;
-        profile_stop(3, NULL, &min3, &max3, &avg3, &load3);
-        delay_ms(1);
     } else if (changed_buttons & 0x04) {
         // move down
         display_move_selection(0);
