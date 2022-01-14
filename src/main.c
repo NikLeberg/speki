@@ -1,14 +1,14 @@
-#include <stm32f4xx.h>
 #include <carme.h>
 #include <carme_io1.h>
 #include <carme_io2.h>
 #include <stdlib.h>
+#include <stm32f4xx.h>
 
-#include "utils.h"
-#include "songs.h"
-#include "player.h"
-#include "display.h"
 #include "dft.h"
+#include "display.h"
+#include "player.h"
+#include "songs.h"
+#include "utils.h"
 
 #define MAX_SONGS 10
 static song_t songs[MAX_SONGS];
@@ -51,12 +51,13 @@ int main(void) {
 }
 
 int load_audio_data(int16_t *data, size_t *length) {
-    int speki[DISPLAY_NUM_OF_SPECTOGRAM_BARS];
-    for (int i = 0; i < DISPLAY_NUM_OF_SPECTOGRAM_BARS; ++i) {
-        speki[i] = rand();
-    }
-    display_set_spectogram(speki, RAND_MAX);
-    return songs_read_song(selected_song, data, length);
+    int err = songs_read_song(selected_song, data, length);
+    //the audio saples, that will be transformed with dft are out of sync with the music being played by 20ms
+    //however, because the calculation uses some time, it may just be in sync again
+    uint32_t magnitude[DISPLAY_NUM_OF_SPECTOGRAM_BARS + 1];
+    dft_transform(data, magnitude);
+    display_set_spectogram(magnitude + 1, RAND_MAX);
+    return err;
 }
 
 void handle_input() {

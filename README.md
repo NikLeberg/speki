@@ -15,6 +15,14 @@ Alternativ findet sich das aktuellste Exemplar auf [GitLab-Pages](http://leuen4.
 - Kopfhörer (HEAD) oder Lautsprecher (LINE) an der entsprechenden Buchse des CARMEs anschliessen
 - Musik & Speki geniessen!
 
+## WSL2 in windows administrator terminal
+- service starte, wenn nicht läuft:
+    - sc start usbipd
+- usb weiterleiten:
+    - usbipd wsl attach --busid X-Y
+- bus id:
+    - usbipd wsl list
+
 ## Verwandte Projekte
 [carme-template](https://gitlab.ti.bfh.ch/jeken1/carme-template) - Vorlage für STM32CubeIDE unabhängige CARME Projekte.
 
