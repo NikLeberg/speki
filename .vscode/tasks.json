@@ -42,6 +42,28 @@
                 "reveal": "never",
                 "focus": false,
             }
+        },
+        {
+            "label": "extra-gdb",
+            "command": "arm-none-eabi-gdb",
+            "args": [
+                "-ex",
+                "set pagination off",
+                "-ex",
+                "target extended-remote :3333",
+                "./bin/speki.elf"
+            ],
+            // "dependsOn": "extra-openocd",
+        },
+        {
+            "label": "extra-openocd-itm",
+            "command": "openocd -f openocd_profiling.cfg",
+            "isBackground": true
+        },
+        {
+            "label": "extra-profiling",
+            "command": "orbtop -e ./bin/speki.elf -v 3 -I 5000 -g profiling.log",
+            // "dependsOn": "extra-openocd-tim",
         }
     ]
 }

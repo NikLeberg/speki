@@ -18,3 +18,14 @@ RUN wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/10.3-2021.10/g
     && mkdir gcc-arm-none-eabi && tar xjfv gcc-arm-none-eabi.tar.bz2 -C gcc-arm-none-eabi --strip-components 1 \
     && rm gcc-arm-none-eabi.tar.bz2
 ENV PATH="/gcc-arm-none-eabi/bin:${PATH}"
+
+# Install Orbuculum and dependencies
+RUN apt-get -q -y update \
+    && apt-get -q -y upgrade \
+    && apt-get -q -y install \
+        libusb-1.0-0-dev libbfd-dev libelf-dev libiberty-dev \
+    && rm -rf /var/lib/apt/lists/*
+RUN git clone https://github.com/orbcode/orbuculum.git /orbuculum \
+    && cd /orbuculum \
+    && WITH_FPGA=0 make
+ENV PATH="/orbuculum/ofiles:${PATH}"
