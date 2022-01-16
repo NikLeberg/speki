@@ -24,12 +24,10 @@
                     "ignoreFailures": true
                 },
                 {
-                    "text": "set remote hardware-breakpoint limit 6",
-                    "ignoreFailures": true
+                    "text": "set remote hardware-breakpoint-limit 6",
                 },
                 {
-                    "text": "set remote hardware-watchoint-limit 4",
-                    "ignoreFailures": true
+                    "text": "set remote hardware-watchpoint-limit 4",
                 }
             ],
             "preLaunchTask": "extra-openocd",
