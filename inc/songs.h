@@ -19,7 +19,7 @@
  * @brief Maximum length for artist and name strings in \ref song_t structure.
  * 
  */
-#define SONGS_MAX_STRING_LENGTH (24U)
+#define SONGS_MAX_STRING_LENGTH (30U)
 
 /**
  * @brief Maximum length of FatFS filenames.
