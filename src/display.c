@@ -112,6 +112,7 @@ static struct {
 
 static void update_callback();
 static void update_song_list();
+static void init_spectogram();
 static void update_spectogram();
 static void init_play_stats();
 static void update_play_stats();
@@ -158,6 +159,8 @@ int display_loop() {
         break;
     case (DISPLAY_INIT_SONG):
         LCD_Clear(GUI_COLOR_BLACK);
+        // init spectogram
+        init_spectogram();
         // draw album cover and static song info once
         init_play_stats();
         g_state = DISPLAY_SONG;
@@ -230,7 +233,8 @@ int display_set_spectogram(uint32_t spectogram[DISPLAY_NUM_OF_SPECTOGRAM_BARS], 
     // in output) is necessary because the pixels on the LCD are counted from
     // the top down.
     for (int i = 0; i < DISPLAY_NUM_OF_SPECTOGRAM_BARS; ++i) {
-        g_spectogram[i] = map_value(spectogram[i], 0, max_value, SPECTOGRAM_HEIGHT, SPECTOGRAM_START_Y);
+        g_spectogram[i] = map_value_u(spectogram[i], 0, max_value,
+                                      SPECTOGRAM_HEIGHT, SPECTOGRAM_START_Y);
     }
     g_flags.spectogram_updated = 1;
     return 0;
@@ -252,6 +256,12 @@ static void update_song_list() {
     }
     LCD_SetTextColor(GUI_COLOR_WHITE);
     LCD_SetBackColor(GUI_COLOR_BLACK);
+}
+
+static void init_spectogram() {
+    for (int i = 0; i < DISPLAY_NUM_OF_SPECTOGRAM_BARS; ++i) {
+        g_spectogram[i] = 0;
+    }
 }
 
 static void update_spectogram() {
