@@ -1,14 +1,14 @@
+#include <stm32f4xx.h>
 #include <carme.h>
 #include <carme_io1.h>
 #include <carme_io2.h>
 #include <stdlib.h>
-#include <stm32f4xx.h>
 
-#include "dft.h"
-#include "display.h"
-#include "player.h"
-#include "songs.h"
 #include "utils.h"
+#include "songs.h"
+#include "player.h"
+#include "display.h"
+#include "dft.h"
 
 #define MAX_SONGS 10
 static song_t songs[MAX_SONGS];
@@ -33,6 +33,8 @@ int main(void) {
     display_init();
     display_set_list(songs, songs_count);
 
+    dft_init();
+
     // infinite loop
     while (1) {
         player_loop();  // 36.0 %, 25.8 %, 25.8 %
@@ -56,9 +58,9 @@ int load_audio_data(int16_t *data, size_t *length) {
     // calculating the dft based on this new chunk, and sending it to the lcd
     // we are out of sync. However, because the dft calculation uses quite some
     // time, it may just be in sync again.
-    uint32_t magnitude[DISPLAY_NUM_OF_SPECTOGRAM_BARS + 1];
+    uint32_t magnitude[DFT_MAGNITUDE_SIZE];
     dft_transform(data, magnitude);
-    display_set_spectogram(magnitude + 1, RAND_MAX);
+    display_set_spectogram(magnitude + 1, UINT32_MAX);
     return err;
 }
 
