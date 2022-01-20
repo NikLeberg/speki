@@ -121,16 +121,30 @@ static inline int map_value(int x, int in_min, int in_max, int out_min, int out_
 }
 
 /**
- * @brief Maps a value from one range to another range, with 0 as common start.
+ * @brief Maps a value from one range to another, unsigned variant.
  * 
- * Similar to \ref map_value(). Only difference is, that the lower bound of the
- * ranges is assumed to be 0.
+ * Similar to \ref map_value() but has unsigned type. Special care needs to be
+ * taken as subtraction sould underflow if it happended in unsigned
+ * representation. Because of this the relevant values are casted to a signed
+ * int of twice the size.
  * 
  * @param x value to map
+ * @param in_min start of input range
  * @param in_max end of input range
+ * @param out_min start of output range
  * @param out_max end of output range
  * @return remapped value
  */
-static inline int map_value2(int x, int in_max, int out_max) {
-    return (int64_t)(x) * (int64_t)(out_max) / (int64_t)(in_max);
+static inline uint32_t map_value_u(uint32_t x, uint32_t in_min, uint32_t in_max, uint32_t out_min, uint32_t out_max) {
+    int64_t ret_val;
+    if (x > in_max) {
+        ret_val = out_max;
+    } else if (x < in_min) {
+        ret_val = out_min;
+    } else {
+        int64_t in_range = (int64_t)in_max - (int64_t)in_min;
+        int64_t out_range = (int64_t)out_max - (int64_t)out_min;
+        ret_val = (x - in_min) * out_range / in_range + out_min;
+    }
+    return ret_val;
 }
