@@ -7,6 +7,8 @@
  * 
  * @copyright Copyright (c) 2022 Adrian Reusser
  *
+ * Theoretical source for this implementation:
+ * https://batchloaf.wordpress.com/2013/12/07/simple-dft-in-c/
  */
 
 
@@ -15,38 +17,76 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define N 60
+/**
+ * @brief Calculate the batch size for the algorithm.
+ * 
+ * The given input samples are split up into multiple chunks.
+ */
+#define N (DFT_MAGNITUDE_SIZE * 2)
 
-int dft_transform(int16_t samples[], uint32_t magnitude[]) {
-    // Twiddle factors (60th roots of unity)
-    const float W[N] = {
-        1.00000, 0.99452, 0.97815, 0.95106, 0.91355, 0.86602, 0.80902, 0.74314,
-        0.66913, 0.58778, 0.50000, 0.40673, 0.30901, 0.20791, 0.10453, -0.00000,
-        -0.10453, -0.20792, -0.30902, -0.40674, -0.50000, -0.58779, -0.66913, -0.74315,
-        -0.80902, -0.86603, -0.91355, -0.95106, -0.97815, -0.99452, -1.00000, -0.99452,
-        -0.97815, -0.95105, -0.91354, -0.86602, -0.80901, -0.74314, -0.66912, -0.58778,
-        -0.49999, -0.40673, -0.30901, -0.20790, -0.10452, 0.00001, 0.10454, 0.20792,
-        0.30903, 0.40675, 0.50001, 0.58780, 0.66914, 0.74315, 0.80902, 0.86603,
-        0.91355, 0.95106, 0.97815, 0.99452};
+/**
+ * @brief Calculate the batch count for the algorithm.
+ * 
+ * How many batches of sample data needs to be processed.
+ */
+#define PARTS_NUM (DFT_SAMPLE_SIZE / (N * DFT_UNDER_SAMPLING * 2))
 
-    float Xre[N / 2 + 1], Xim[N / 2 + 1]; // DFT of x (real and imaginary parts)
+/**
+ * @brief Calculate the length of each sample batch.
+ * 
+ */
+#define PARTS_LENGTH (DFT_SAMPLE_SIZE / PARTS_NUM)
 
-    // Calculate DFT and power spectrum up to Nyquist frequency
-    int to_sin = 3 * N / 4; // index offset for sin
-    int a, b;
-    for (int k = 0; k <= N / 2; ++k) {
-        Xre[k] = 0;
-        Xim[k] = 0;
-        a = 0;
-        b = to_sin;
+#define PI2 (6.2832)
+
+/**
+ * @brief Index offset into \ref g_twiddle_factors for sinus.
+ * 
+ */
+#define SIN_OFFSET (3 * N / 4)
+
+static float g_twiddle_factors[N];
+
+void transform_part(int16_t *samples, uint32_t *magnitude);
+
+void dft_init() {
+    // pre calculate the cosine twiddle factors, e.g. the n-th roots of unity
+    for (int n = 0; n < N; ++n) {
+        g_twiddle_factors[n] = cos(n * PI2 / N);
+    }
+}
+
+void dft_transform(int16_t *samples, uint32_t *magnitude) {
+    uint32_t p[PARTS_NUM][DFT_MAGNITUDE_SIZE];
+    // run algorithm in batches
+    for (int i = 0; i < PARTS_NUM; ++i) {
+        transform_part(samples + i * PARTS_LENGTH, p[i]);
+    }
+    // calculate average of manitudes
+    for (int j = 0; j < DFT_MAGNITUDE_SIZE; ++j) {
+        uint64_t average = 0;
+        for (int i = 0; i < PARTS_NUM; ++i) {
+            average += p[i][j];
+        }
+        magnitude[j] = average / PARTS_NUM;
+    }
+}
+
+void transform_part(int16_t *samples, uint32_t *magnitude) {
+    float Xre[N / 2] = {0};
+    float Xim[N / 2] = {0};
+    for (int k = 0; k < N / 2; ++k) {
+        int a = 0;
+        int b = SIN_OFFSET;
         for (int n = 0; n < N; ++n) {
-            Xre[k] += samples[2 * n] * W[a % N];
-            Xim[k] -= samples[2 * n] * W[b % N];
+            int32_t s = samples[DFT_SAMPLE_CHANNEL + 2 * n * DFT_UNDER_SAMPLING];
+            Xre[k] += s * g_twiddle_factors[a % N];
+            Xim[k] -= s * g_twiddle_factors[b % N];
             a += k;
             b += k;
         }
-        magnitude[k] = Xre[k] * Xre[k] + Xim[k] * Xim[k];
+        float P = Xre[k] * Xre[k] + Xim[k] * Xim[k];
+        // clamp float value, otherwise the conversation is undefined behaviour
+        magnitude[k] = P > (float)(UINT32_MAX) ? UINT32_MAX : P;
     }
-
-    return 0;
 }
