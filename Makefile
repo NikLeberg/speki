@@ -66,7 +66,7 @@ include $(LIBDIR)/$(CMSISDIR)/build.mk
 ifeq ($(BUILD_TYPE), debug)
 	CFLAGS_BASE += -ggdb -O0 -DUSE_FULL_ASSERT
 else ifeq ($(BUILD_TYPE), release-debug)
-	CFLAGS_BASE += -O4 -ggdb
+	CFLAGS_BASE += -O4 -g3
 else ifeq ($(BUILD_TYPE), release)
 	CFLAGS_BASE += -O4
 else
@@ -74,6 +74,7 @@ $(error BUILD_TYPE needs to be set to either debug, release-debug or release)
 endif
 CFLAGS_BASE += -Wall -std=gnu11 -fdata-sections -ffunction-sections
 CFLAGS_BASE += -specs=nano.specs
+CFLAGS_BASE += -Wno-format-truncation
 CFLAGS_PROC += -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16
 CFLAGS_DEF += -D$(PTYPE) -DUSE_STDPERIPH_DRIVER
 CFLAGS_DEF += -DHSE_VALUE=25000000 -DSYSCALL_USART=USART1
@@ -91,6 +92,7 @@ LDFLAGS += -Wl,--gc-sections -Wl,--defsym=malloc_getpagesize_P=0x80
 
 SRCS += $(wildcard src/*.c)
 SRCS_ASM += $(wildcard src/*.s)
+SRCS_ASM += $(wildcard src/*.S)
 
 OBJS := $(SRCS:%.c=$(OBJDIR)/%.o) $(SRCS_ASM:%.s=$(OBJDIR)/%.o)
 

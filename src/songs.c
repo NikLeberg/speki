@@ -151,7 +151,7 @@ int songs_read_song(song_t *song, int16_t *buffer, size_t *length) {
 
 static int open(char *name, song_t *song) {
     // save filename into structure
-    strncpy(song->filename, name, SONGS_MAX_FATFS_FILE_NAME_LENGTH);
+    strncpy(song->filename, name, SONGS_MAX_FATFS_FILE_NAME_LENGTH - 1);
     // open .wav file if it exists
     if (f_open(&song->file, song->filename, FA_OPEN_EXISTING | FA_READ) != FR_OK) {
         return -1;
