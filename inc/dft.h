@@ -1,7 +1,7 @@
 /**
- * @file dft.c
- * @author reusa1 (reusa1@bfh.ch)
- * @brief Implementation of calculating a discrete fourier transform.
+ * @file dft.h
+ * @author Reusser Adrian <reusa1@bfh.ch>
+ * @brief Interface for calculation of the discrete fourier transform.
  * @version 0.1
  * @date 2022-01-14
  * 

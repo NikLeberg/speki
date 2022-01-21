@@ -1,6 +1,6 @@
 /**
  * @file songs.h
- * @author NikLeberg (niklaus.leuenb@gmail.com)
+ * @author Leuenberger Niklaus <leuen4@bfh.ch>
  * @brief Interface for loading song files and their infos from the SD-Card.
  * @version 0.1
  * @date 2021-12-17

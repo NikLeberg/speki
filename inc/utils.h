@@ -1,6 +1,6 @@
 /**
  * @file utils.h
- * @author NikLeberg (niklaus.leuenb@gmail.com)
+ * @author Leuenberger Niklaus <leuen4@bfh.ch>
  * @brief Interface for some random utility functions.
  * @version 0.1
  * @date 2021-12-26
