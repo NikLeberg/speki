@@ -1,6 +1,6 @@
 /**
  * @file player.c
- * @author NikLeberg (niklaus.leuenb@gmail.com)
+ * @author Leuenberger Niklaus <leuen4@bfh.ch>
  * @brief Module for audio playback with cs42l51 codec.
  * @version 0.3
  * @date 2021-12-11

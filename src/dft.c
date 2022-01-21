@@ -1,6 +1,6 @@
 /**
  * @file dft.c
- * @author reusa1 (reusa1@bfh.ch)
+ * @author Reusser Adrian <reusa1@bfh.ch>
  * @brief Module for calculating a discrete fourier transform.
  * @version 0.1
  * @date 2022-01-14
