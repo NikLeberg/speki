@@ -17,71 +17,66 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/**
- * @brief Calculate the batch size for the algorithm.
- * 
- * The given input samples are split up into multiple chunks.
- */
-#define N (DFT_MAGNITUDE_SIZE * 2)
-
-/**
- * @brief Calculate the batch count for the algorithm.
- * 
- * How many batches of sample data needs to be processed.
- */
-#define PARTS_NUM (DFT_SAMPLE_SIZE / (N * DFT_UNDER_SAMPLING * 2))
-
-/**
- * @brief Calculate the length of each sample batch.
- * 
- */
-#define PARTS_LENGTH (DFT_SAMPLE_SIZE / PARTS_NUM)
-
 #define PI2 (6.2832)
 
 /**
- * @brief Index offset into \ref g_twiddle_factors for sinus.
+ * @brief Twiddle factors of cosine.
  * 
+ * Holds the pre calculated cosine twiddle factors, e.g. the n-th roots of
+ * unity.
+ * @note The values are only valid after a call to \ref dft_init has been made.
  */
-#define SIN_OFFSET (3 * N / 4)
+float g_twiddle_factors[DFT_N];
 
-static float g_twiddle_factors[N];
-
-void transform_part(int16_t *samples, uint32_t *magnitude);
+/**
+ * @brief Implementation for the dft.
+ * 
+ * Depending it the \ref DFT_USE_ASM macro is defined, the ASM or the C
+ * implementation will be used for this.
+ * 
+ * @param samples samples with a lenght of 2 * N * DFT_UNDER_SAMPLING
+ * @param[out] magnitude the calculated magnitudes of length DFT_MAGNITUDE_SIZE
+ */
+#ifndef DFT_USE_ASM
+static void transform_part(int16_t *samples, uint32_t *magnitude);
+#else
+extern void transform_part(int16_t *samples, uint32_t *magnitude);
+#endif
 
 void dft_init() {
     // pre calculate the cosine twiddle factors, e.g. the n-th roots of unity
-    for (int n = 0; n < N; ++n) {
-        g_twiddle_factors[n] = cos(n * PI2 / N);
+    for (int n = 0; n < DFT_N; ++n) {
+        g_twiddle_factors[n] = cos(n * PI2 / DFT_N);
     }
 }
 
 void dft_transform(int16_t *samples, uint32_t *magnitude) {
-    uint32_t p[PARTS_NUM][DFT_MAGNITUDE_SIZE];
+    uint32_t p[DFT_PARTS_NUM][DFT_MAGNITUDE_SIZE];
     // run algorithm in batches
-    for (int i = 0; i < PARTS_NUM; ++i) {
-        transform_part(samples + i * PARTS_LENGTH, p[i]);
+    for (int i = 0; i < DFT_PARTS_NUM; ++i) {
+        transform_part(samples + i * DFT_PARTS_LENGTH, p[i]);
     }
-    // calculate average of manitudes
+    // calculate average of magnitudes
     for (int j = 0; j < DFT_MAGNITUDE_SIZE; ++j) {
         uint64_t average = 0;
-        for (int i = 0; i < PARTS_NUM; ++i) {
+        for (int i = 0; i < DFT_PARTS_NUM; ++i) {
             average += p[i][j];
         }
-        magnitude[j] = average / PARTS_NUM;
+        magnitude[j] = average / DFT_PARTS_NUM;
     }
 }
 
-void transform_part(int16_t *samples, uint32_t *magnitude) {
-    float Xre[N / 2] = {0};
-    float Xim[N / 2] = {0};
-    for (int k = 0; k < N / 2; ++k) {
+#ifndef DFT_USE_ASM
+static void transform_part(int16_t *samples, uint32_t *magnitude) {
+    float Xre[DFT_N / 2] = {0};
+    float Xim[DFT_N / 2] = {0};
+    for (int k = 0; k < DFT_N / 2; ++k) {
         int a = 0;
-        int b = SIN_OFFSET;
-        for (int n = 0; n < N; ++n) {
+        int b = DFT_SIN_OFFSET;
+        for (int n = 0; n < DFT_N; ++n) {
             int32_t s = samples[DFT_SAMPLE_CHANNEL + 2 * n * DFT_UNDER_SAMPLING];
-            Xre[k] += s * g_twiddle_factors[a % N];
-            Xim[k] -= s * g_twiddle_factors[b % N];
+            Xre[k] += s * g_twiddle_factors[a % DFT_N];
+            Xim[k] -= s * g_twiddle_factors[b % DFT_N];
             a += k;
             b += k;
         }
@@ -90,3 +85,4 @@ void transform_part(int16_t *samples, uint32_t *magnitude) {
         magnitude[k] = P > (float)(UINT32_MAX) ? UINT32_MAX : P;
     }
 }
+#endif

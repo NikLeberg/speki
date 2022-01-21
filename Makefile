@@ -92,9 +92,9 @@ LDFLAGS += -Wl,--gc-sections -Wl,--defsym=malloc_getpagesize_P=0x80
 
 SRCS += $(wildcard src/*.c)
 SRCS_ASM += $(wildcard src/*.s)
-SRCS_ASM += $(wildcard src/*.S)
+SRCS_ASM_S += $(wildcard src/*.S)
 
-OBJS := $(SRCS:%.c=$(OBJDIR)/%.o) $(SRCS_ASM:%.s=$(OBJDIR)/%.o)
+OBJS := $(SRCS:%.c=$(OBJDIR)/%.o) $(SRCS_ASM:%.s=$(OBJDIR)/%.o) $(SRCS_ASM_S:%.S=$(OBJDIR)/%.o)
 
 # list of target files
 TARGETFILES := $(BINDIR)/$(TARGET).elf $(BINDIR)/$(TARGET).bin $(BINDIR)/$(TARGET).lst $(BINDIR)/compile_commands.json
@@ -131,7 +131,12 @@ $(BINDIR)/$(TARGET).elf: $(OBJS) | dirs
 # compile and generate dependency files
 $(OBJDIR)/%.o: %.s | dirs
 	@$(CC) $(CFLAGS) -c -o $@ $< -MMD -MF $(DEPDIR)/$(*F).d
-	@echo "[CC] $<"
+	@echo "[AS] $<"
+
+# compile and generate dependency files
+$(OBJDIR)/%.o: %.S | dirs
+	@$(CC) $(CFLAGS) -c -o $@ $< -MMD -MF $(DEPDIR)/$(*F).d
+	@echo "[AS] $<"
 
 # compile and generate dependency files
 $(OBJDIR)/%.o: %.c | dirs
