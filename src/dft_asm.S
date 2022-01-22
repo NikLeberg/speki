@@ -22,23 +22,44 @@
 
 .extern g_twiddle_factors
 .global transform_part
+.type transform_part, %function
 
 .text                           // section text (executable code)
 
 #ifdef DFT_USE_ASM
 
-// r0: samples, r1: mangitude
-.type transform_part, %function
+/**
+ * @brief Implementation for the dft.
+ * 
+ * Depending it the \ref DFT_USE_ASM macro is defined, the ASM or the C
+ * implementation will be used for this.
+ * 
+ * @param r0 samples with a lenght of 2 * N * DFT_UNDER_SAMPLING
+ * @param[out] r1 the calculated magnitudes of length DFT_MAGNITUDE_SIZE
+ */
 transform_part:
-    push {r4}                   // safe registers
-    ldr r3, =0                  // counter for loop
+    push    {fp, lr}               // safe registers
+
+    // Allocate space for local variables on the stack and save the resulting
+    // stack pointer as frame pointer.
+    //sub     sp, 4
+    //mov     fp, sp
+
+    // Load length of magnitude array (in words) into r2, zero into r0 and use
+    // these to loop over each value and set it to zero. The address of the
+    // magnitude array is still in r1 from the function call. After each write
+    // r2 is decremented. If it reached 0, the loop ends.
+    ldr     r2, =DFT_MAGNITUDE_SIZE
+    ldr     r0, =0
 loop:
-    str r3, [r1, r3]            // store twiddle as magnitude value
-    add r3, r3, #1              // increment loop counter
-    cmp r3, DFT_MAGNITUDE_SIZE
-    beq loop                    // end loop when all magnitudes were saved
-end:
-    pop {r4}                    // restore used registers
-    mov pc, lr                  // exit function
+    str     r0, [r1], 4
+    subs    r2, 1
+    bne     loop
+
+    // Release allocated space on stack.
+    //add     sp, 4
+
+    pop     {fp, lr}                // restore registers
+    mov     pc, lr                  // exit function
 
 #endif // DFT_USE_ASM
