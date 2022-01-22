@@ -14,6 +14,13 @@ Alternativ findet sich das aktuellste Exemplar auf [GitLab-Pages](http://leuen4.
 - `/bin/speki.bin` mit [ST-LINK Utility](https://www.st.com/en/development-tools/stsw-link004.html) oder [STM32Cube](https://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-programmers/stm32cubeprog.html) auf das CARME-M4-Kit flashen
 - Geeignete Songs gemäss [Anleitung](./songs/README.md) erstellen und auf SD-Karte laden
 - Kopfhörer oder Lautsprecher an der HEAD Buchse des CARMEs anschliessen
+- Per Menü ein Song auswählen:
+    - Im Hauptmenü:
+        - Button T3: Auswahl um eine Zeile nach unten verschieben
+        - Button T2: Auswahl um eine Zeile nach oben verschieben
+        - Button T0: Aktuell ausgewählter Song abspielen
+    - Währendem ein Song abspielt:
+        - Button T1: Abpielen stoppen und zum Hauptmenü zurück
 - Musik & Speki geniessen!
 
 ## Nutzung unter Windows WSL2
