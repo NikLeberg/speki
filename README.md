@@ -20,7 +20,8 @@ Alternativ findet sich das aktuellste Exemplar auf [GitLab-Pages](http://leuen4.
         - Button T2: Auswahl um eine Zeile nach oben verschieben
         - Button T0: Aktuell ausgewählter Song abspielen
     - Währendem ein Song abspielt:
-        - Button T1: Abpielen stoppen und zum Hauptmenü zurück
+        - Button T1: Song stoppen und zum Hauptmenü zurück
+        - Potentiometer (Analog In 0): Lautstärkeregulierung
 - Musik & Speki geniessen!
 
 ## Nutzung unter Windows WSL2
@@ -30,6 +31,18 @@ Nach Einrichten des Devcontainers unter WSL2 lässt sich per [usbipd](https://gi
 - (optional) `sc start usbipd` - bei Fehlermeldung hiermit den Service starten
 - Das Flashen und das Debugging funktioniert nun direkt aus VSCode heraus: Dazu die vordefinierten Aufgaben `flash` oder `openocd` verwenden.
 - Weiteres Vorgehen wie im vorherigen Abschnitt.
+
+## Projektstand
+Die grundlegenden Funktionen gemäss [Pflichtenheft](./doc/Pflichtenheft.md) wurden alle umgesetzt. Einige der genannten Erweiterungen wurden implementiert:
+- *mehrere Audiosignale auswählbar*: indem ab SD-Karte belibige Songs abspielbar sind
+- *schöne Darstellung*: Albumcover, Vortschrittsanzeige und Song-Metatinformationen werden übersichtlich dargestellt
+
+Das neuschreiben *sinnvoller Teile in Assembler* sollte gemäss Profiling (siehe [hier](./doc/Profiling.md)) ermittelt werden um die kritischen und langsamen Teile des C Codes zu optimieren. Das Profiling ergab aber, dass die meiste Zeit > 60% in der BSP und sGUI Library verweilt wird. Hauptsächlich wurde auf die SD-Karte gewartet oder Pixel an das LCD gesendet. Der von uns als langsam vermutete Teil des DFT-Algorithmus beanspruchte lediglich ~ 10% der CPU. Da wir nicht zu fest mit den Librarys kämpfen wollten, optimierten wir dennoch den DFT-Algorithmus.
+
+ToDo:
+?? Wir erzielten eine Reduktion auf 5% der CPU-Zeit ??
+?? Leider ist der GCC Compiler mit seinem -O4 Optimisierungs Level aber besser als wir.
+Welche Implementierung die DFT verwendet lässt sich per `DFT_USE_ASM` Makro in [dft.h](./inc/dft.h) auswählen.
 
 ## Verwandte Projekte
 [carme-template](https://gitlab.ti.bfh.ch/jeken1/carme-template) - Vorlage für STM32CubeIDE unabhängige CARME Projekte.
