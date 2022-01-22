@@ -57,9 +57,9 @@
 // calculate positions and sizes of elements relative to eachother
 #define LIST_FONT (FONT_NORMAL)
 
-#define SPECTOGRAM_START_X (0)
+#define SPECTOGRAM_START_X (0U)
 #define SPECTOGRAM_END_X (SCRN_RIGHT)
-#define SPECTOGRAM_START_Y (0)
+#define SPECTOGRAM_START_Y (0U)
 #define SPECTOGRAM_END_Y (SCRN_BOTTOM - BOTTOM_STRIP)
 #define SPECTOGRAM_HEIGHT (SPECTOGRAM_END_Y - SPECTOGRAM_START_Y)
 #define SPECTOGRAM_WIDTH ( \
@@ -100,7 +100,7 @@ static enum {
 
 static const song_t *g_current_list;
 static size_t g_list_length;
-static int g_list_selection;
+static size_t g_list_selection;
 
 static const song_t *g_current_song;
 static uint16_t g_spectogram[DISPLAY_NUM_OF_SPECTOGRAM_BARS];
@@ -193,15 +193,17 @@ int display_move_selection(int direction) {
     // the most reasonable and set the index to the start or to the end.
     if (direction) {
         // up
-        --g_list_selection;
-        if (g_list_selection < 0) {
+        if (g_list_selection == 0) {
             g_list_selection = g_list_length - 1;
+        } else {
+            --g_list_selection;
         }
     } else {
         // down
-        ++g_list_selection;
-        if (g_list_selection == g_list_length) {
+        if (g_list_selection == g_list_length - 1) {
             g_list_selection = 0;
+        } else {
+            ++g_list_selection;
         }
     }
     return 0;
@@ -273,7 +275,8 @@ static void update_spectogram() {
         // the normal "filled" part of the bar to white. This removes the need
         // to "sweep" two times over the screen space.
         for (int i = 0; i < DISPLAY_NUM_OF_SPECTOGRAM_BARS; ++i) {
-            int bar_start_x = SPECTOGRAM_START_X + (MARGIN / 2U) + i * (SPECTOGRAM_WIDTH + MARGIN);
+            uint16_t bar_start_x =
+                SPECTOGRAM_START_X + (MARGIN / 2U) + i * (SPECTOGRAM_WIDTH + MARGIN);
             LCD_FillArea(bar_start_x, SPECTOGRAM_START_Y,
                          bar_start_x + SPECTOGRAM_WIDTH, g_spectogram[i], GUI_COLOR_BLACK);
             LCD_FillArea(bar_start_x, g_spectogram[i],
@@ -303,8 +306,8 @@ static void init_play_stats() {
 static void update_play_stats() {
     // progress bar
     static int last_bar_end;
-    int bar_end_x =
-        map_value(g_current_song->samples_read, 0, g_current_song->samples, PROGRESS_START_X, PROGRESS_END_X);
+    uint16_t bar_end_x =
+        map_value_u(g_current_song->samples_read, 0, g_current_song->samples, PROGRESS_START_X, PROGRESS_END_X);
     if (bar_end_x != last_bar_end) {
         last_bar_end = bar_end_x;
         LCD_FillArea(PROGRESS_START_X, PROGRESS_START_Y, bar_end_x, PROGRESS_END_Y, GUI_COLOR_WHITE);

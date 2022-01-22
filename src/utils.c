@@ -23,7 +23,7 @@ void utils_init() {
 static __IO uint32_t system_ticks;
 
 void delay_ms(uint16_t ms) {
-    int32_t start_ticks;
+    uint32_t start_ticks;
     start_ticks = system_ticks;
     while ((system_ticks - start_ticks) < ms) {
         ; // adds approx 110us

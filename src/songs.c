@@ -74,7 +74,7 @@ int songs_list_songs(song_t songs[], size_t *length) {
     }
     // Loop over all files in the directory. Loop is not recursive,
     // subdirectories will be ignored.
-    int song_nr = 0;
+    size_t song_nr = 0;
     while (1) {
         FILINFO fno;
         if (f_readdir(&dir, &fno) != FR_OK || fno.fname[0] == 0) {

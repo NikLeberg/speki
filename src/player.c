@@ -64,7 +64,7 @@ int player_init(player_load_data_callback callback) {
     g_callback = callback;
 
     // init codec (also set volume)
-    CS42L51_Init(200);
+    CS42L51_Init(127);
 
     // disable i2s peripheral
     // (was enabled by CS42L51_Init, needed to be able to configure DMA)

@@ -108,14 +108,16 @@ void profile_stop(int index, uint32_t *duration, uint32_t *min, uint32_t *max, u
  * @param out_max end of output range
  * @return remapped value
  */
-static inline int map_value(int x, int in_min, int in_max, int out_min, int out_max) {
-    int ret_val;
+static inline int32_t map_value(int32_t x, int32_t in_min, int32_t in_max, int32_t out_min, int32_t out_max) {
+    int32_t ret_val;
     if (x > in_max) {
         ret_val = out_max;
     } else if (x < in_min) {
         ret_val = out_min;
     } else {
-        ret_val = (int64_t)(x - in_min) * (int64_t)(out_max - out_min) / (int64_t)(in_max - in_min) + out_min;
+        int64_t in_range = (int64_t)in_max - (int64_t)in_min;
+        int64_t out_range = (int64_t)out_max - (int64_t)out_min;
+        ret_val = (x - in_min) * out_range / in_range + out_min;
     }
     return ret_val;
 }

@@ -103,12 +103,14 @@ void handle_input() {
     if (abs(poti - last_poti) > 10) {
         last_poti = poti;
         // map poti value from [0 to 955] to a volume of [128 to 255]
-        uint8_t volume = map_value(poti, 0, 955, 128, 255);
+        uint8_t volume = map_value_u(poti, 0, 955, 128, 255);
         player_set_volume(volume);
     }
 }
 
 void assert_failed(uint8_t *file, uint32_t line) {
+    (void)file;
+    (void)line;
     while (1) {
         ;
     }

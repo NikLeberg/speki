@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define PI2 (6.2832)
+#define PI2 (6.2832f)
 
 /**
  * @brief Twiddle factors of cosine.
@@ -46,7 +46,7 @@ extern void transform_part(int16_t *samples, uint32_t *magnitude);
 void dft_init() {
     // pre calculate the cosine twiddle factors, e.g. the n-th roots of unity
     for (int n = 0; n < DFT_N; ++n) {
-        g_twiddle_factors[n] = cos(n * PI2 / DFT_N);
+        g_twiddle_factors[n] = cosf(n * PI2 / DFT_N);
     }
 }
 
