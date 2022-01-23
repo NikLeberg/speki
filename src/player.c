@@ -17,7 +17,7 @@
 
 #include "player.h"
 
-#define TIMEOUT (1000U)
+#define TIMEOUT (1000U) //!< timeout after which busy-wait loops are aborted
 
 /**
  * @brief Player states.
@@ -42,12 +42,31 @@ enum {
     MAX_HALF
 };
 
-static player_load_data_callback g_callback;
+static player_load_data_callback g_callback; //!< user callback to load new data
+
+/**
+ * @brief Buffer for audio data.
+ * 
+ * The user writes data into this buffer (via the callback).
+ * The DMA reads data from this buffer.
+ * Carefull synchronization is needed so that the writing and reading does not
+ * interfere with each other. If the user callback is returning data too slowly
+ * a audible studder is hearable.
+ */
 static int16_t g_buffer[MAX_HALF * PLAYER_BUFFER_SIZE];
+
 static struct {
     __IO int valid[MAX_HALF]; //!< 1 if lower / upper half of buffer has valid data
 } g_flags;
 
+/**
+ * @brief Load a half of the buffer with data.
+ * 
+ * Calls the user callback to get new data.
+ * 
+ * @param half 0 for the lower half or 1 for the upper half
+ * @retval length of the read data, is normally \ref PLAYER_BUFFER_SIZE
+ */
 static size_t load_data(int half);
 
 int player_init(player_load_data_callback callback) {

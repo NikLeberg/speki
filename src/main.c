@@ -10,35 +10,51 @@
 #include "display.h"
 #include "dft.h"
 
-#define MAX_SONGS 10
-static song_t songs[MAX_SONGS];
-static size_t songs_count = MAX_SONGS;
-static song_t *selected_song;
+#define MAX_SONGS 10                   //!< define how many songs can be loaded
+static song_t songs[MAX_SONGS];        //!< array of possibly available songs
+static size_t songs_count = MAX_SONGS; //!< count of really available songs
+static song_t *selected_song;          //!< currently playing song
 
+/**
+ * @brief Load the next chunk of audio data and run dft.
+ * 
+ * @param[in,out] data pointer to a buffer of size PLAYER_BUFFER_SIZE
+ * @param[out] length size of valid buffer data, \ref PLAYER_BUFFER_SIZE or less
+ * @retval 0 when new data could be loaded
+ * @retval -1 when data could not be loaded
+ */
 int load_audio_data(int16_t *data, size_t *length);
 
+/**
+ * @brief Check for new button presses or potentiometer changes.
+ * 
+ * Don't call this too often, reading of ADC takes a long time.
+ */
 void handle_input();
 
+/**
+ * @brief Main loop.
+ * 
+ * @retval 0 (never returns though)
+ */
 int main(void) {
-    CARME_IO1_Init();
-    CARME_IO2_Init();
+    // initialize CARME IO
+    CARME_IO1_Init(); // used for pushbuttons
+    CARME_IO2_Init(); // used for potentiometer
 
-    utils_init();
-
-    songs_init();
-    songs_list_songs(songs, &songs_count);
-
-    player_init(load_audio_data);
-
-    display_init();
-    display_set_list(songs, songs_count);
-
-    dft_init();
+    // initialize submodules
+    utils_init();                          // starts SysTick timer
+    songs_init();                          // mounts SD-card filesystem
+    songs_list_songs(songs, &songs_count); // loads available songs from SD-card
+    player_init(load_audio_data);          // starts audio hardware and DMA
+    display_init();                        // starts lcd hardware
+    display_set_list(songs, songs_count);  // give display the available songs
+    dft_init();                            // precalculate twiddle factors
 
     // infinite loop
     while (1) {
-        player_loop();  // 36.0 %, 25.8 %, 25.8 %
-        display_loop(); // 45.2 %, 47.3 %
+        player_loop();
+        display_loop();
         // React to button presses and poti changes every 100 ms.
         static uint32_t last_ticks;
         uint32_t ticks = get_ticks();
@@ -47,6 +63,8 @@ int main(void) {
             handle_input();
         }
     }
+
+    // never get here
     return 0;
 }
 
@@ -108,6 +126,12 @@ void handle_input() {
     }
 }
 
+/**
+ * @brief Halt program when a debug assert in the BSP was triggered.
+ * 
+ * @param file unused
+ * @param line unused
+ */
 void assert_failed(uint8_t *file, uint32_t line) {
     (void)file;
     (void)line;

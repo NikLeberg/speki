@@ -98,23 +98,59 @@ static enum {
     DISPLAY_SONG
 } g_state;
 
-static const song_t *g_current_list;
-static size_t g_list_length;
-static size_t g_list_selection;
+static const song_t *g_current_list; //!< pointer to the current song list
+static size_t g_list_length;         //!< length of the list
+static size_t g_list_selection;      //!< currently selected song in list
 
-static const song_t *g_current_song;
+static const song_t *g_current_song; //!< pointer to the currently playing song
 static uint16_t g_spectogram[DISPLAY_NUM_OF_SPECTOGRAM_BARS];
 
+/**
+ * @brief Flags for the main display loop.
+ * 
+ */
 static struct {
-    __IO int update_done;
-    int spectogram_updated;
+    __IO int update_done;   //!< lcd updated the screen, is called with ~50 Hz
+    int spectogram_updated; //!< new spectogram data was given, need to update
 } g_flags;
 
+/**
+ * @brief Callback for LCD update.
+ * 
+ * This gets registered as LCD update callback and will be called from an ISR
+ * after the LCD refreshed the screen. Use to synchronize to the framerate of
+ * the LCD.
+ */
 static void update_callback();
+
+/**
+ * @brief Draw the song list.
+ * 
+ */
 static void update_song_list();
+
+/**
+ * @brief Initialize spectogram.
+ * 
+ */
 static void init_spectogram();
+
+/**
+ * @brief Draw the spectogram bars.
+ * 
+ */
 static void update_spectogram();
+
+/**
+ * @brief Draw album cover and song meta information once.
+ * 
+ */
 static void init_play_stats();
+
+/**
+ * @brief Update played song duration.
+ * 
+ */
 static void update_play_stats();
 
 int display_init() {
