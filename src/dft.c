@@ -68,21 +68,20 @@ void dft_transform(int16_t *samples, uint32_t *magnitude) {
 
 #ifndef DFT_USE_ASM
 static void transform_part(int16_t *samples, uint32_t *magnitude) {
-    float Xre[DFT_N / 2] = {0};
-    float Xim[DFT_N / 2] = {0};
     for (int k = 0; k < DFT_N / 2; ++k) {
         int a = 0;
         int b = DFT_SIN_OFFSET;
+        float Xre = 0.0f;
+        float Xim = 0.0f;
         for (int n = 0; n < DFT_N; ++n) {
             int32_t s = samples[DFT_SAMPLE_CHANNEL + 2 * n * DFT_UNDER_SAMPLING];
-            Xre[k] += s * g_twiddle_factors[a % DFT_N];
-            Xim[k] -= s * g_twiddle_factors[b % DFT_N];
+            Xre += s * g_twiddle_factors[a % DFT_N];
+            Xim -= s * g_twiddle_factors[b % DFT_N];
             a += k;
             b += k;
         }
-        float P = Xre[k] * Xre[k] + Xim[k] * Xim[k];
-        // clamp float value, otherwise the conversation is undefined behaviour
-        magnitude[k] = P > (float)(UINT32_MAX) ? UINT32_MAX : P;
+        float P = Xre * Xre + Xim * Xim;
+        magnitude[k] = P;
     }
 }
 #endif

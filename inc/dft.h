@@ -49,7 +49,7 @@
  * 
  * ASM implementation is enabled if this macro is defined, comment to disable.
  */
-// #define DFT_USE_ASM (1U)
+#define DFT_USE_ASM (1U)
 
 /**
  * @brief Calculate the batch size for the algorithm.

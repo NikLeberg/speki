@@ -37,12 +37,16 @@ Die grundlegenden Funktionen gemäss [Pflichtenheft](./doc/Pflichtenheft.md) wur
 - *mehrere Audiosignale auswählbar*: indem ab SD-Karte belibige Songs abspielbar sind
 - *schöne Darstellung*: Albumcover, Vortschrittsanzeige und Song-Metatinformationen werden übersichtlich dargestellt
 
-Das neuschreiben *sinnvoller Teile in Assembler* sollte gemäss Profiling (siehe [hier](./doc/Profiling.md)) ermittelt werden um die kritischen und langsamen Teile des C Codes zu optimieren. Das Profiling ergab aber, dass die meiste Zeit > 60% in der BSP und sGUI Library verweilt wird. Hauptsächlich wurde auf die SD-Karte gewartet oder Pixel an das LCD gesendet. Der von uns als langsam vermutete Teil des DFT-Algorithmus beanspruchte lediglich ~ 10% der CPU. Da wir nicht zu fest mit den Librarys kämpfen wollten, optimierten wir dennoch den DFT-Algorithmus.
+Das neuschreiben *sinnvoller Teile in Assembler* sollte gemäss Profiling (siehe [hier](./doc/Profiling.md)) ermittelt werden um die kritischen und langsamen Teile des C Codes zu optimieren. Das Profiling ergab aber, dass die meiste Zeit > 60% in der BSP und sGUI Library verweilt wird. Hauptsächlich wurde auf die SD-Karte gewartet oder Pixel an das LCD gesendet. Der von uns als langsam vermutete Teil des DFT-Algorithmus beanspruchte lediglich ~ 20% der CPU. Da wir nicht zu fest mit den Librarys kämpfen wollten, optimierten wir dennoch den DFT-Algorithmus. In folgender Tabelle ist die relativ beansprchte CPU Zeit mit C oder ASM Implementierung und O0 oder O4 Optimisierungslevel vermerkt.
 
-ToDo:
-?? Wir erzielten eine Reduktion auf 5% der CPU-Zeit ??
-?? Leider ist der GCC Compiler mit seinem -O4 Optimisierungs Level aber besser als wir.
-Welche Implementierung die DFT verwendet lässt sich per `DFT_USE_ASM` Makro in [dft.h](./inc/dft.h) auswählen.
+|  Optimisierungslevel  | C   | ASM |
+|----|-----|-----|
+| O0 | 22% | 5%  |
+| O4 | 6%  | 5%  |
+
+Somit wurde das von uns gesetzte Ziel erreicht! Die ASM Implementierung ist schneller als der optimierte Code des Compilers.
+
+Welche Implementierung die DFT verwendet, lässt sich per `DFT_USE_ASM` Makro in [dft.h](./inc/dft.h) auswählen.
 
 ## Verwandte Projekte
 [carme-template](https://gitlab.ti.bfh.ch/jeken1/carme-template) - Vorlage für STM32CubeIDE unabhängige CARME Projekte.
