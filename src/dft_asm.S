@@ -41,7 +41,7 @@
  * @param[out] r1 the calculated magnitudes of length DFT_MAGNITUDE_SIZE
  */
 transform_part:
-    push    {r4, r5, r6, r7, r8, fp, lr}    // safe registers
+    push    {r4, r5, r6, r7, r8, r9, fp, lr}    // safe registers
 
     // Loop over the magnitudes that need to be calculated. (k loop)
     ldr     r2, =DFT_MAGNITUDE_SIZE-1
@@ -125,7 +125,7 @@ loop_samples:
     subs    r2, 1
     bpl     loop_magnitudes
 
-    pop     {r4, r5, r6, r7, r8, fp, lr}    // restore registers
-    mov     pc, lr                          // exit function
+    // Restore registers and exit
+    pop     {r4, r5, r6, r7, r8, r9, fp, pc}
 
 #endif // DFT_USE_ASM
