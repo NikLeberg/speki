@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [ $# -lt 3 ]; then
+if [ ! $# -eq 3 ]; then
     echo "Expected three arguments. Please call script as follows:"
     echo "./convert_cover.sh \"input_file.xyz\" \"artist\" \"title\""
     exit 1
