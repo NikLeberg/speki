@@ -43,6 +43,14 @@
 transform_part:
     push    {r4, r5, r6, r7, r8, r9, fp, lr}    // safe registers
 
+    // Depending on what channel the dft acts on, add two to the address of the
+    // sample array. Samples are 16bit and interleaved [left, right, left, ...].
+#if (DFT_SAMPLE_CHANNEL != 0U)
+    add     r0, 2                   // add two if the right channel is specified
+#endif
+
+    ldr     r7, =g_twiddle_factors  // preload address to twiddle factors in r7
+
     // Loop over the magnitudes that need to be calculated. (k loop)
     ldr     r2, =DFT_MAGNITUDE_SIZE-1
 .loop_magnitudes:
@@ -52,15 +60,11 @@ transform_part:
     vldr    s3, =0                  // init real part to zero
     vldr    s4, =0                  // init imaginary part to zero
     mov     r9, r0                  // store copy of pointer to samples in r9
-    ldr     r7, =g_twiddle_factors  // preload address to twiddle factors in r7
 
     // Loop inside loop, iterate over all samples. (n loop)
     ldr     r5, =DFT_N-1
 .loop_samples:
 
-#if (DFT_SAMPLE_CHANNEL != 0U)
-    add     r0, 1                   // add one if the right channel is specified
-#endif
     // Load a sample into r6. The sample comes from the copy of the given
     // parameter (r0) that was saved to r9. Instead of calculating every loop a
     // offset into the sample array we just move the r9 pointer. (*2 because
