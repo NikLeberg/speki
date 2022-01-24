@@ -45,8 +45,7 @@ transform_part:
 
     // Loop over the magnitudes that need to be calculated. (k loop)
     ldr     r2, =DFT_MAGNITUDE_SIZE-1
-
-loop_magnitudes:
+.loop_magnitudes:
 
     ldr     r3, =0                  // offset a into twiddle factors, cosine
     ldr     r4, =DFT_SIN_OFFSET     // offset b into twiddle factors, sine
@@ -57,11 +56,11 @@ loop_magnitudes:
 
     // Loop inside loop, iterate over all samples. (n loop)
     ldr     r5, =DFT_N-1
+.loop_samples:
 
 #if (DFT_SAMPLE_CHANNEL != 0U)
     add     r0, 1                   // add one if the right channel is specified
 #endif
-loop_samples:
     // Load a sample into r6. The sample comes from the copy of the given
     // parameter (r0) that was saved to r9. Instead of calculating every loop a
     // offset into the sample array we just move the r9 pointer. (*2 because
@@ -106,7 +105,7 @@ loop_samples:
 
     // Decrement n loop variable an loop until n (r5) = -1.
     subs    r5, 1
-    bpl     loop_samples
+    bpl     .loop_samples
 
     // Calculate magnitude (s5) from real an imaginary parts.
     // s5 = s3 * s3 + s4 * s4
@@ -123,7 +122,7 @@ loop_samples:
 
     // Decrement k loop variable and loop until k (r2) = -1.
     subs    r2, 1
-    bpl     loop_magnitudes
+    bpl     .loop_magnitudes
 
     // Restore registers and exit
     pop     {r4, r5, r6, r7, r8, r9, fp, pc}
