@@ -111,7 +111,7 @@ transform_part:
     subs    r5, 1
     bpl     .loop_samples
 
-    // Calculate magnitude (s5) from real an imaginary parts.
+    // Calculate magnitude (s5) from real and imaginary parts.
     // s5 = s3 * s3 + s4 * s4
     vmul.f32        s5, s3, s3
     vfma.f32        s5, s4, s4
@@ -121,7 +121,7 @@ transform_part:
     vmov    r8, s5
 
     // Save magnitude into array pointed to by r1. Save it at offset r2 (k loop
-    // variable) that is shifted by 2.
+    // variable) that is multiplied by 4 (i.e. shifted by 2.)
     str     r8, [r1, r2, LSL 2]
 
     // Decrement k loop variable and loop until k (r2) = -1.
