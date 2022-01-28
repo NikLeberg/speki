@@ -17,7 +17,7 @@
  * @brief Initialize utility functions.
  * 
  */
-void utils_init();
+void utils_init(void);
 
 /**
  * @brief Delay for given duration in milliseconds.
@@ -35,7 +35,7 @@ void delay_ms(uint16_t ms);
  * 
  * @return ticks in milliseconds
  */
-uint32_t get_ticks();
+uint32_t get_ticks(void);
 
 /**
  * @brief Number of available concurrent profilers.

@@ -54,7 +54,7 @@ typedef struct {
  * @retval 0 on success
  * @retval -1 on failure
  */
-int songs_init();
+int songs_init(void);
 
 /**
  * @brief Retrieve a list (array) of all songs on the SD-Card.

@@ -162,7 +162,7 @@ int player_init(player_load_data_callback callback) {
     return 0;
 }
 
-int player_loop() {
+int player_loop(void) {
     switch (g_state) {
     case (PLAYER_NOT_INITIALIZED):
         // can't run, not initialized
@@ -207,7 +207,7 @@ int player_loop() {
     return 0;
 }
 
-int player_play() {
+int player_play(void) {
     if (g_state == PLAYER_NOT_INITIALIZED) {
         return -1;
     }
@@ -215,7 +215,7 @@ int player_play() {
     return 0;
 }
 
-int player_stop() {
+int player_stop(void) {
     if (g_state == PLAYER_NOT_INITIALIZED) {
         return -1;
     }

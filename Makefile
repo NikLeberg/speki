@@ -74,7 +74,7 @@ $(error BUILD_TYPE needs to be set to either debug, release-debug or release)
 endif
 CFLAGS_BASE += -Wall -std=gnu11 -fdata-sections -ffunction-sections
 CFLAGS_BASE += -specs=nano.specs
-CFLAGS_BASE += -Wno-format-truncation -Wdouble-promotion
+CFLAGS_BASE += -Wno-format-truncation -Wdouble-promotion -Wstrict-prototypes
 CFLAGS_PROC += -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16
 CFLAGS_DEF += -D$(PTYPE) -DUSE_STDPERIPH_DRIVER
 CFLAGS_DEF += -DHSE_VALUE=25000000 -DSYSCALL_USART=USART1

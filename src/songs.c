@@ -56,7 +56,7 @@ static int parse_default_header(song_t *song);
 static int parse_info_header(song_t *song);
 static int parse_data_header(song_t *song);
 
-int songs_init() {
+int songs_init(void) {
     // initialize FatFS and mount SD-Card
     // (source: BSP sdcard example from https://web.carme.bfh.science/)
     return (f_mount(&main_fs, "0:", 1) != FR_OK);

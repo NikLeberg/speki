@@ -43,7 +43,7 @@ static void transform_part(int16_t *samples, uint32_t *magnitude);
 extern void transform_part(int16_t *samples, uint32_t *magnitude);
 #endif
 
-void dft_init() {
+void dft_init(void) {
     // pre calculate the cosine twiddle factors, e.g. the n-th roots of unity
     for (int n = 0; n < DFT_N; ++n) {
         g_twiddle_factors[n] = cosf(n * PI2 / DFT_N);

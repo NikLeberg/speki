@@ -36,7 +36,7 @@
  * @retval 0 on success
  * @retval -1 on failure
  */
-int display_init();
+int display_init(void);
 
 /**
  * @brief Main loop of display module.
@@ -46,7 +46,7 @@ int display_init();
  * @retval 0 on success
  * @retval -1 on failure
  */
-int display_loop();
+int display_loop(void);
 
 /**
  * @brief Set the display into mode "List" and display a list of songs.

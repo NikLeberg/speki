@@ -85,7 +85,7 @@
  * 
  * @note Has to be called once before \ref dft_transform() can be used.
  */
-void dft_init();
+void dft_init(void);
 
 /**
  * @brief Calculate the dft magnitudes of the given samples.

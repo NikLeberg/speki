@@ -70,7 +70,7 @@ int player_init(player_load_data_callback callback);
  * @retval 0 on success
  * @retval -1 on failure
  */
-int player_loop();
+int player_loop(void);
 
 /**
  * @brief Start playing audio.
@@ -78,7 +78,7 @@ int player_loop();
  * @retval 0 on success
  * @retval -1 on failure
  */
-int player_play();
+int player_play(void);
 
 /**
  * @brief Stop playing audio.
@@ -86,7 +86,7 @@ int player_play();
  * @retval 0 on success
  * @retval -1 on failure
  */
-int player_stop();
+int player_stop(void);
 
 /**
  * @brief Set output volume.

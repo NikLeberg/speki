@@ -121,39 +121,39 @@ static struct {
  * after the LCD refreshed the screen. Use to synchronize to the framerate of
  * the LCD.
  */
-static void update_callback();
+static void update_callback(void);
 
 /**
  * @brief Draw the song list.
  * 
  */
-static void update_song_list();
+static void update_song_list(void);
 
 /**
  * @brief Initialize spectogram.
  * 
  */
-static void init_spectogram();
+static void init_spectogram(void);
 
 /**
  * @brief Draw the spectogram bars.
  * 
  */
-static void update_spectogram();
+static void update_spectogram(void);
 
 /**
  * @brief Draw album cover and song meta information once.
  * 
  */
-static void init_play_stats();
+static void init_play_stats(void);
 
 /**
  * @brief Update played song duration.
  * 
  */
-static void update_play_stats();
+static void update_play_stats(void);
 
-int display_init() {
+int display_init(void) {
     // check current state
     if (g_state != DISPLAY_NOT_INITIALIZED) {
         // only allow initialization once
@@ -169,7 +169,7 @@ int display_init() {
     return 0;
 }
 
-int display_loop() {
+int display_loop(void) {
     // only ever do something if the LCD was updated
     if (!g_flags.update_done) {
         return 0;
@@ -278,11 +278,11 @@ int display_set_spectogram(uint32_t spectogram[DISPLAY_NUM_OF_SPECTOGRAM_BARS], 
     return 0;
 }
 
-static void update_callback() {
+static void update_callback(void) {
     g_flags.update_done = 1;
 }
 
-static void update_song_list() {
+static void update_song_list(void) {
     LCD_SetFont(LIST_FONT);
     for (int i = 0; i < g_list_length; ++i) {
         // invert the colors for the currently selected list entry
@@ -296,13 +296,13 @@ static void update_song_list() {
     LCD_SetBackColor(GUI_COLOR_BLACK);
 }
 
-static void init_spectogram() {
+static void init_spectogram(void) {
     for (int i = 0; i < DISPLAY_NUM_OF_SPECTOGRAM_BARS; ++i) {
         g_spectogram[i] = 0;
     }
 }
 
-static void update_spectogram() {
+static void update_spectogram(void) {
     if (g_flags.spectogram_updated) {
         g_flags.spectogram_updated = 0;
         // Instead of clearing the space of the spectogram to black first and
@@ -321,7 +321,7 @@ static void update_spectogram() {
     }
 }
 
-static void init_play_stats() {
+static void init_play_stats(void) {
     // album cover
     LCD_BMP_DrawBitmap(g_current_song->bmp_name, 0, SPECTOGRAM_END_Y);
     // song name and artist
@@ -339,7 +339,7 @@ static void init_play_stats() {
     LCD_DisplayStringXY(PLAY_TIME_START_X, PLAY_TIME_START_Y, tmp);
 }
 
-static void update_play_stats() {
+static void update_play_stats(void) {
     // progress bar
     static int last_bar_end;
     uint16_t bar_end_x =

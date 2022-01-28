@@ -30,7 +30,7 @@ int load_audio_data(int16_t *data, size_t *length);
  * 
  * Don't call this too often, reading of ADC takes a long time.
  */
-void handle_input();
+void handle_input(void);
 
 /**
  * @brief Main loop.
@@ -82,7 +82,7 @@ int load_audio_data(int16_t *data, size_t *length) {
     return err;
 }
 
-void handle_input() {
+void handle_input(void) {
     // React to (new) button presses:
     // Button 0: Play currently selected song (changes display to song view).
     // Button 1: Stop playing song (changes display to list view).
