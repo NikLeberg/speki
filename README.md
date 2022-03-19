@@ -24,6 +24,8 @@ Alternativ findet sich das aktuellste Exemplar auf [GitLab-Pages](http://leuen4.
         - Potentiometer (Analog In 0): Lautstärkeregulierung
 - Musik & Speki geniessen!
 
+[<img src="./doc/funktional.jpg" width="50%"/>](./doc/funktional.jpg)
+
 ## Nutzung unter Windows WSL2
 Nach Einrichten des Devcontainers unter WSL2 lässt sich per [usbipd](https://github.com/dorssel/usbipd-win) den USB-Port des physischen STM32-Debugger an WSL2 weiterleiten. Dazu in einem Windows Terminal mit Administratorrechten folgende Befehle verwenden:
 - `usbipd wsl list` - Auflisten aller verfügbaren USB Geräte
